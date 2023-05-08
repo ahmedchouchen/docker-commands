@@ -1,0 +1,4539 @@
+<!DOCTYPE html>
+<html class=" js csstransforms csstransforms3d csstransitions" lang="en-GB"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="pingback" href="https://collabnix.com/xmlrpc.php">
+   
+<title>Getting Started with Docker and PostgreSQL – Collabnix</title>
+    <style>
+        #wpadminbar #wp-admin-bar-vtrts_free_top_button .ab-icon:before {
+            content: "\f185";
+            color: #1DAE22;
+            top: 3px;
+        }
+    </style>
+    <meta name="robots" content="max-image-preview:large">
+<meta name="description" content="PostgreSQL is an open-source relational database management system (RDBMS) that is known for its reliability, robustness, and scalability. It is widely used in enterprise applications and offers features such as data integrity, transactions, and SQL support. Why is PostgreSQL so damn popular? PostgreSQL is popular for several reasons, including: 1. Reliability and robustness PostgreSQL is […]">
+<link rel="dns-prefetch" href="https://maxcdn.bootstrapcdn.com/">
+<link rel="dns-prefetch" href="https://fonts.googleapis.com/">
+<link rel="alternate" type="application/rss+xml" title="Collabnix » Feed" href="https://collabnix.com/feed/">
+<link rel="alternate" type="application/rss+xml" title="Collabnix » Comments Feed" href="https://collabnix.com/comments/feed/">
+<script src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/lftracker_v1_DzLR5a5oNZA7BoQ2.js" async=""></script><script type="text/javascript">
+window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/14.0.0\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/14.0.0\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/collabnix.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=6.2"}};
+/*! This file is auto-generated */
+!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){p.clearRect(0,0,i.width,i.height),p.fillText(e,0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(t,0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(p&&p.fillText)switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s("\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f","\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f")?!1:!s("\ud83c\uddfa\ud83c\uddf3","\ud83c\uddfa\u200b\ud83c\uddf3")&&!s("\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f","\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f");case"emoji":return!s("\ud83e\udef1\ud83c\udffb\u200d\ud83e\udef2\ud83c\udfff","\ud83e\udef1\ud83c\udffb\u200b\ud83e\udef2\ud83c\udfff")}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(e=t.source||{}).concatemoji?c(e.concatemoji):e.wpemoji&&e.twemoji&&(c(e.twemoji),c(e.wpemoji)))}(window,document,window._wpemojiSettings);
+</script><script src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/wp-emoji-release.min.js" type="text/javascript" defer="defer"></script>
+<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 0.07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel="stylesheet" id="wp-block-library-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/style.min.css" type="text/css" media="all">
+<style id="wp-block-library-theme-inline-css" type="text/css">
+.wp-block-audio figcaption{color:#555;font-size:13px;text-align:center}.is-dark-theme .wp-block-audio figcaption{color:hsla(0,0%,100%,.65)}.wp-block-audio{margin:0 0 1em}.wp-block-code{border:1px solid #ccc;border-radius:4px;font-family:Menlo,Consolas,monaco,monospace;padding:.8em 1em}.wp-block-embed figcaption{color:#555;font-size:13px;text-align:center}.is-dark-theme .wp-block-embed figcaption{color:hsla(0,0%,100%,.65)}.wp-block-embed{margin:0 0 1em}.blocks-gallery-caption{color:#555;font-size:13px;text-align:center}.is-dark-theme .blocks-gallery-caption{color:hsla(0,0%,100%,.65)}.wp-block-image figcaption{color:#555;font-size:13px;text-align:center}.is-dark-theme .wp-block-image figcaption{color:hsla(0,0%,100%,.65)}.wp-block-image{margin:0 0 1em}.wp-block-pullquote{border-bottom:4px solid;border-top:4px solid;color:currentColor;margin-bottom:1.75em}.wp-block-pullquote cite,.wp-block-pullquote footer,.wp-block-pullquote__citation{color:currentColor;font-size:.8125em;font-style:normal;text-transform:uppercase}.wp-block-quote{border-left:.25em solid;margin:0 0 1.75em;padding-left:1em}.wp-block-quote cite,.wp-block-quote footer{color:currentColor;font-size:.8125em;font-style:normal;position:relative}.wp-block-quote.has-text-align-right{border-left:none;border-right:.25em solid;padding-left:0;padding-right:1em}.wp-block-quote.has-text-align-center{border:none;padding-left:0}.wp-block-quote.is-large,.wp-block-quote.is-style-large,.wp-block-quote.is-style-plain{border:none}.wp-block-search .wp-block-search__label{font-weight:700}.wp-block-search__button{border:1px solid #ccc;padding:.375em .625em}:where(.wp-block-group.has-background){padding:1.25em 2.375em}.wp-block-separator.has-css-opacity{opacity:.4}.wp-block-separator{border:none;border-bottom:2px solid;margin-left:auto;margin-right:auto}.wp-block-separator.has-alpha-channel-opacity{opacity:1}.wp-block-separator:not(.is-style-wide):not(.is-style-dots){width:100px}.wp-block-separator.has-background:not(.is-style-dots){border-bottom:none;height:1px}.wp-block-separator.has-background:not(.is-style-wide):not(.is-style-dots){height:2px}.wp-block-table{margin:0 0 1em}.wp-block-table td,.wp-block-table th{word-break:normal}.wp-block-table figcaption{color:#555;font-size:13px;text-align:center}.is-dark-theme .wp-block-table figcaption{color:hsla(0,0%,100%,.65)}.wp-block-video figcaption{color:#555;font-size:13px;text-align:center}.is-dark-theme .wp-block-video figcaption{color:hsla(0,0%,100%,.65)}.wp-block-video{margin:0 0 1em}.wp-block-template-part.has-background{margin-bottom:0;margin-top:0;padding:1.25em 2.375em}
+</style>
+<style id="eazydocs-search-banner-style-inline-css" type="text/css">
+.page_breadcrumb{background:#edefec;margin-top:-2px;padding:12px 0;position:relative;z-index:1}.page_breadcrumb .row{align-items:center}.page_breadcrumb .date{color:var(--black_500);float:right;font-size:13px}.page_breadcrumb .date i{padding-right:5px}.ezd_search_banner{background-color:#fafafa;background-position:bottom;background-repeat:no-repeat;background-size:contain;margin:0!important;padding-bottom:70px;padding-top:120px}.ezd_search_banner.has_bg_dark{background-repeat:no-repeat;background-size:cover}.ezd_search_banner.has_bg_dark .ezd_search_keywords .label{color:#d6d9dc}.ezd_search_banner.has_bg_dark .ezd_search_keywords ul li a{color:#ebebeb;text-decoration:none}.ezd_search_banner.has_bg_dark.no_cs_bg{background-image:url(/wp-content/plugins/eazydocs/build/search-banner/../images/search-bg.1a1931f8.jpeg)}.ezd_search_banner .input-wrapper label{left:-2px;position:absolute;top:48%}.ezd_search_banner .banner_shap_img li:first-child{bottom:0;top:auto}.ezd_search_banner .banner_shap_img li:last-child{bottom:0;left:auto;right:0;top:auto}form.ezd_search_form{max-width:650px}form.ezd_search_form .form-group{margin-bottom:10px}form.ezd_search_form .form-group .input-wrapper{margin-right:0;max-width:650px}form.ezd_search_form .form-group .input-wrapper i{color:#fff}form.ezd_search_form .form-group .input-wrapper input{box-shadow:0 1px 1px rgba(11,80,115,.3),0 1px 5px rgba(60,64,67,.1);font-size:14px;font-weight:400;height:50px;line-height:50px;padding-right:30px}form.ezd_search_form .form-group .input-wrapper input:focus,form.ezd_search_form .form-group .input-wrapper input:hover{box-shadow:0 1px 2px 0 rgba(60,64,67,.3),0 2px 6px 2px rgba(60,64,67,.15)}form.ezd_search_form .form-group .input-wrapper input:focus{background:#fff;color:var(--black_800);outline:thin dotted}form.ezd_search_form .form-group .input-wrapper input:focus::-moz-placeholder{color:var(--black_500)}form.ezd_search_form .form-group .input-wrapper input:focus::placeholder{color:var(--black_500)}form.ezd_search_form .form-group .input-wrapper input:focus+label i{color:#242729}form.ezd_search_form .form-group .input-wrapper input::-moz-placeholder{color:#ebebeb;font-size:14px;font-weight:400}form.ezd_search_form .form-group .input-wrapper input::placeholder{color:#ebebeb;font-size:14px;font-weight:400}.ezd_search_keywords{text-align:center}.ezd_search_keywords .label{color:#54595d;font-weight:400}.ezd_search_keywords ul li{margin-bottom:0;margin-left:0;margin-top:0}.ezd_search_keywords ul li a{background:transparent;border-bottom:2px solid hsla(0,0%,100%,.2);border-radius:0;color:#54595d;display:inline;font-size:14px;font-weight:500;line-height:1.2;padding:0;transition:all .3s linear 0s}.ezd_search_keywords ul li:hover a{border-color:hsla(0,0%,100%,.5)}.doc_banner_text .banner_search_form{margin-top:45px;transition:all .4s}.doc_banner_text .banner_search_form,.ezd_search_form{position:relative}#ezd-search-results{background:#fff;border:none;border-radius:4px;box-shadow:0 3px 4px 0 rgba(4,73,89,.06);display:none;font-size:14px;font-weight:400;padding:0;position:absolute;transition:all .4s;width:100%;z-index:99}#ezd-search-results a{text-decoration:none}#ezd-search-results.ajax-search{display:block}#ezd-search-results:before{background:#fff;border-left:1px solid #e6eeef;border-top:1px solid #e6eeef;content:"";height:12px;left:40px;position:absolute;top:-6px;transform:rotate(45deg);width:12px}#ezd-search-results .error.title{color:#dc3545;margin-bottom:0;text-align:left}#ezd-search-results .doc-section{border-right:none;padding-left:25px}#ezd-search-results .search-result-item{border-bottom:1px solid #f5f5fa;cursor:pointer;padding:7px 15px;position:relative;transition:all .3s}#ezd-search-results .search-result-item a{display:flex}#ezd-search-results .search-result-item:last-child{border-bottom:none}#ezd-search-results .search-result-item:hover svg.block.h-auto.w-16{display:block}#ezd-search-results .search-result-item:hover{background:var(--ezd_brand_color)}#ezd-search-results .search-result-item:hover .breadcrumb-item,#ezd-search-results .search-result-item:hover a{color:#fff}#ezd-search-results .search-result-item img,#ezd-search-results .search-result-item svg.block.h-full.w-auto{margin:auto;position:absolute;top:12px}#ezd-search-results .search-result-item svg.block.h-auto.w-16{bottom:0;display:none;margin:auto;position:absolute;right:20px;top:0}.eazydocs-breadcrumb-root-title li.breadcrumb-item{background:#f5f5fa;color:#777aaf!important;padding:5px 15px!important;width:100%}#ezd-search-results .breadcrumb .breadcrumb-item{padding-left:0}ol.eazydocs-search-wrapper .breadcrumb .breadcrumb-item:first-child{display:none}#ezd-search-results .breadcrumb.eazydocs-search-wrapper{padding-left:25px}#ezd_searchInput~.spinner{background:#fff;border-width:2px;bottom:17px;display:none;height:18px;position:absolute;right:27px;width:18px;z-index:999}.has_drop #ezd_searchInput+.spinner{right:130px}.has_drop #ezd_searchInput::-webkit-search-cancel-button{position:absolute;right:130px}.ezd_search_form{margin:10px auto 0}.ezd_search_form .form-group{display:flex;flex-wrap:wrap;justify-content:center}.ezd_search_form .input-wrapper{flex:1;position:relative}.ezd_search_form .input-wrapper i{color:#b6bac3;font-size:16px;left:25px;position:absolute;top:50%;transform:translateY(-50%) rotate(-90deg)}.ezd_search_form .input-wrapper input{background:#fff;background:hsla(0,0%,100%,.2);border:0;border-radius:45px;color:hsla(0,0%,100%,.7);font-size:16px;height:60px;padding-left:52px;padding-right:155px;width:100%}.ezd_search_form .input-wrapper input:hover{background:hsla(0,0%,100%,.27)}body.ezd-search-focused .focus_overlay{opacity:1;visibility:visible}body.ezd-search-focused .banner_search_form{position:relative;z-index:999!important}body:not(.ezd-search-focused) #ezd-search-results.ajax-search{display:none}.focus_overlay{background:rgba(0,0,0,.4);height:100%;left:0;opacity:0;position:fixed;top:0;transition:all .3s linear;visibility:hidden;width:100%;z-index:99}.header_search_form_info{position:relative}.ezd_search_keywords{align-items:center;display:flex;flex-wrap:wrap;font-weight:500;justify-content:center;margin-top:10px;text-align:left}.ezd_search_keywords span{color:#fff;font-size:14px;margin-right:10px}.ezd_search_keywords ul{margin-bottom:0;margin-left:0}.ezd_search_keywords ul li{display:inline-block;margin-right:7px}
+
+</style>
+<link rel="stylesheet" id="themezee-magazine-blocks-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/themezee-magazine-blocks.css" type="text/css" media="all">
+<link rel="stylesheet" id="wc-blocks-vendors-style-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/wc-blocks-vendors-style.css" type="text/css" media="all">
+<link rel="stylesheet" id="wc-blocks-style-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/wc-blocks-style.css" type="text/css" media="all">
+<link rel="stylesheet" id="classic-theme-styles-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/classic-themes.min.css" type="text/css" media="all">
+<style id="global-styles-inline-css" type="text/css">
+body{--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--duotone--dark-grayscale: url('#wp-duotone-dark-grayscale');--wp--preset--duotone--grayscale: url('#wp-duotone-grayscale');--wp--preset--duotone--purple-yellow: url('#wp-duotone-purple-yellow');--wp--preset--duotone--blue-red: url('#wp-duotone-blue-red');--wp--preset--duotone--midnight: url('#wp-duotone-midnight');--wp--preset--duotone--magenta-yellow: url('#wp-duotone-magenta-yellow');--wp--preset--duotone--purple-green: url('#wp-duotone-purple-green');--wp--preset--duotone--blue-orange: url('#wp-duotone-blue-orange');--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}body .is-layout-flow > .alignleft{float: left;margin-inline-start: 0;margin-inline-end: 2em;}body .is-layout-flow > .alignright{float: right;margin-inline-start: 2em;margin-inline-end: 0;}body .is-layout-flow > .aligncenter{margin-left: auto !important;margin-right: auto !important;}body .is-layout-constrained > .alignleft{float: left;margin-inline-start: 0;margin-inline-end: 2em;}body .is-layout-constrained > .alignright{float: right;margin-inline-start: 2em;margin-inline-end: 0;}body .is-layout-constrained > .aligncenter{margin-left: auto !important;margin-right: auto !important;}body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)){max-width: var(--wp--style--global--content-size);margin-left: auto !important;margin-right: auto !important;}body .is-layout-constrained > .alignwide{max-width: var(--wp--style--global--wide-size);}body .is-layout-flex{display: flex;}body .is-layout-flex{flex-wrap: wrap;align-items: center;}body .is-layout-flex > *{margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+.wp-block-navigation a:where(:not(.wp-element-button)){color: inherit;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}
+.wp-block-pullquote{font-size: 1.5em;line-height: 1.6;}
+</style>
+<style id="extendify-gutenberg-patterns-and-templates-utilities-inline-css" type="text/css">
+.ext-absolute {
+  position: absolute !important;
+}
+
+.ext-relative {
+  position: relative !important;
+}
+
+.ext-top-base {
+  top: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-top-lg {
+  top: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--top-base {
+  top: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--top-lg {
+  top: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-right-base {
+  right: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-right-lg {
+  right: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--right-base {
+  right: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--right-lg {
+  right: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-bottom-base {
+  bottom: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-bottom-lg {
+  bottom: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--bottom-base {
+  bottom: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--bottom-lg {
+  bottom: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-left-base {
+  left: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-left-lg {
+  left: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--left-base {
+  left: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--left-lg {
+  left: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-order-1 {
+  order: 1 !important;
+}
+
+.ext-order-2 {
+  order: 2 !important;
+}
+
+.ext-col-auto {
+  grid-column: auto !important;
+}
+
+.ext-col-span-1 {
+  grid-column: span 1 / span 1 !important;
+}
+
+.ext-col-span-2 {
+  grid-column: span 2 / span 2 !important;
+}
+
+.ext-col-span-3 {
+  grid-column: span 3 / span 3 !important;
+}
+
+.ext-col-span-4 {
+  grid-column: span 4 / span 4 !important;
+}
+
+.ext-col-span-5 {
+  grid-column: span 5 / span 5 !important;
+}
+
+.ext-col-span-6 {
+  grid-column: span 6 / span 6 !important;
+}
+
+.ext-col-span-7 {
+  grid-column: span 7 / span 7 !important;
+}
+
+.ext-col-span-8 {
+  grid-column: span 8 / span 8 !important;
+}
+
+.ext-col-span-9 {
+  grid-column: span 9 / span 9 !important;
+}
+
+.ext-col-span-10 {
+  grid-column: span 10 / span 10 !important;
+}
+
+.ext-col-span-11 {
+  grid-column: span 11 / span 11 !important;
+}
+
+.ext-col-span-12 {
+  grid-column: span 12 / span 12 !important;
+}
+
+.ext-col-span-full {
+  grid-column: 1 / -1 !important;
+}
+
+.ext-col-start-1 {
+  grid-column-start: 1 !important;
+}
+
+.ext-col-start-2 {
+  grid-column-start: 2 !important;
+}
+
+.ext-col-start-3 {
+  grid-column-start: 3 !important;
+}
+
+.ext-col-start-4 {
+  grid-column-start: 4 !important;
+}
+
+.ext-col-start-5 {
+  grid-column-start: 5 !important;
+}
+
+.ext-col-start-6 {
+  grid-column-start: 6 !important;
+}
+
+.ext-col-start-7 {
+  grid-column-start: 7 !important;
+}
+
+.ext-col-start-8 {
+  grid-column-start: 8 !important;
+}
+
+.ext-col-start-9 {
+  grid-column-start: 9 !important;
+}
+
+.ext-col-start-10 {
+  grid-column-start: 10 !important;
+}
+
+.ext-col-start-11 {
+  grid-column-start: 11 !important;
+}
+
+.ext-col-start-12 {
+  grid-column-start: 12 !important;
+}
+
+.ext-col-start-13 {
+  grid-column-start: 13 !important;
+}
+
+.ext-col-start-auto {
+  grid-column-start: auto !important;
+}
+
+.ext-col-end-1 {
+  grid-column-end: 1 !important;
+}
+
+.ext-col-end-2 {
+  grid-column-end: 2 !important;
+}
+
+.ext-col-end-3 {
+  grid-column-end: 3 !important;
+}
+
+.ext-col-end-4 {
+  grid-column-end: 4 !important;
+}
+
+.ext-col-end-5 {
+  grid-column-end: 5 !important;
+}
+
+.ext-col-end-6 {
+  grid-column-end: 6 !important;
+}
+
+.ext-col-end-7 {
+  grid-column-end: 7 !important;
+}
+
+.ext-col-end-8 {
+  grid-column-end: 8 !important;
+}
+
+.ext-col-end-9 {
+  grid-column-end: 9 !important;
+}
+
+.ext-col-end-10 {
+  grid-column-end: 10 !important;
+}
+
+.ext-col-end-11 {
+  grid-column-end: 11 !important;
+}
+
+.ext-col-end-12 {
+  grid-column-end: 12 !important;
+}
+
+.ext-col-end-13 {
+  grid-column-end: 13 !important;
+}
+
+.ext-col-end-auto {
+  grid-column-end: auto !important;
+}
+
+.ext-row-auto {
+  grid-row: auto !important;
+}
+
+.ext-row-span-1 {
+  grid-row: span 1 / span 1 !important;
+}
+
+.ext-row-span-2 {
+  grid-row: span 2 / span 2 !important;
+}
+
+.ext-row-span-3 {
+  grid-row: span 3 / span 3 !important;
+}
+
+.ext-row-span-4 {
+  grid-row: span 4 / span 4 !important;
+}
+
+.ext-row-span-5 {
+  grid-row: span 5 / span 5 !important;
+}
+
+.ext-row-span-6 {
+  grid-row: span 6 / span 6 !important;
+}
+
+.ext-row-span-full {
+  grid-row: 1 / -1 !important;
+}
+
+.ext-row-start-1 {
+  grid-row-start: 1 !important;
+}
+
+.ext-row-start-2 {
+  grid-row-start: 2 !important;
+}
+
+.ext-row-start-3 {
+  grid-row-start: 3 !important;
+}
+
+.ext-row-start-4 {
+  grid-row-start: 4 !important;
+}
+
+.ext-row-start-5 {
+  grid-row-start: 5 !important;
+}
+
+.ext-row-start-6 {
+  grid-row-start: 6 !important;
+}
+
+.ext-row-start-7 {
+  grid-row-start: 7 !important;
+}
+
+.ext-row-start-auto {
+  grid-row-start: auto !important;
+}
+
+.ext-row-end-1 {
+  grid-row-end: 1 !important;
+}
+
+.ext-row-end-2 {
+  grid-row-end: 2 !important;
+}
+
+.ext-row-end-3 {
+  grid-row-end: 3 !important;
+}
+
+.ext-row-end-4 {
+  grid-row-end: 4 !important;
+}
+
+.ext-row-end-5 {
+  grid-row-end: 5 !important;
+}
+
+.ext-row-end-6 {
+  grid-row-end: 6 !important;
+}
+
+.ext-row-end-7 {
+  grid-row-end: 7 !important;
+}
+
+.ext-row-end-auto {
+  grid-row-end: auto !important;
+}
+
+.ext-m-0:not([style*="margin"]) {
+  margin: 0 !important;
+}
+
+.ext-m-auto:not([style*="margin"]) {
+  margin: auto !important;
+}
+
+.ext-m-base:not([style*="margin"]) {
+  margin: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-m-lg:not([style*="margin"]) {
+  margin: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--m-base:not([style*="margin"]) {
+  margin: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--m-lg:not([style*="margin"]) {
+  margin: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-mx-0:not([style*="margin"]) {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.ext-mx-auto:not([style*="margin"]) {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.ext-mx-base:not([style*="margin"]) {
+  margin-left: var(--wp--style--block-gap, 1.75rem) !important;
+  margin-right: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-mx-lg:not([style*="margin"]) {
+  margin-left: var(--extendify--spacing--large, 3rem) !important;
+  margin-right: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--mx-base:not([style*="margin"]) {
+  margin-left: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  margin-right: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--mx-lg:not([style*="margin"]) {
+  margin-left: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  margin-right: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-my-0:not([style*="margin"]) {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.ext-my-auto:not([style*="margin"]) {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
+.ext-my-base:not([style*="margin"]) {
+  margin-top: var(--wp--style--block-gap, 1.75rem) !important;
+  margin-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-my-lg:not([style*="margin"]) {
+  margin-top: var(--extendify--spacing--large, 3rem) !important;
+  margin-bottom: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--my-base:not([style*="margin"]) {
+  margin-top: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  margin-bottom: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--my-lg:not([style*="margin"]) {
+  margin-top: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  margin-bottom: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-mt-0:not([style*="margin"]) {
+  margin-top: 0 !important;
+}
+
+.ext-mt-auto:not([style*="margin"]) {
+  margin-top: auto !important;
+}
+
+.ext-mt-base:not([style*="margin"]) {
+  margin-top: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-mt-lg:not([style*="margin"]) {
+  margin-top: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--mt-base:not([style*="margin"]) {
+  margin-top: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--mt-lg:not([style*="margin"]) {
+  margin-top: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-mr-0:not([style*="margin"]) {
+  margin-right: 0 !important;
+}
+
+.ext-mr-auto:not([style*="margin"]) {
+  margin-right: auto !important;
+}
+
+.ext-mr-base:not([style*="margin"]) {
+  margin-right: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-mr-lg:not([style*="margin"]) {
+  margin-right: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--mr-base:not([style*="margin"]) {
+  margin-right: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--mr-lg:not([style*="margin"]) {
+  margin-right: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-mb-0:not([style*="margin"]) {
+  margin-bottom: 0 !important;
+}
+
+.ext-mb-auto:not([style*="margin"]) {
+  margin-bottom: auto !important;
+}
+
+.ext-mb-base:not([style*="margin"]) {
+  margin-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-mb-lg:not([style*="margin"]) {
+  margin-bottom: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--mb-base:not([style*="margin"]) {
+  margin-bottom: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--mb-lg:not([style*="margin"]) {
+  margin-bottom: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-ml-0:not([style*="margin"]) {
+  margin-left: 0 !important;
+}
+
+.ext-ml-auto:not([style*="margin"]) {
+  margin-left: auto !important;
+}
+
+.ext-ml-base:not([style*="margin"]) {
+  margin-left: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-ml-lg:not([style*="margin"]) {
+  margin-left: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext--ml-base:not([style*="margin"]) {
+  margin-left: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+}
+
+.ext--ml-lg:not([style*="margin"]) {
+  margin-left: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+}
+
+.ext-block {
+  display: block !important;
+}
+
+.ext-inline-block {
+  display: inline-block !important;
+}
+
+.ext-inline {
+  display: inline !important;
+}
+
+.ext-flex {
+  display: flex !important;
+}
+
+.ext-inline-flex {
+  display: inline-flex !important;
+}
+
+.ext-grid {
+  display: grid !important;
+}
+
+.ext-inline-grid {
+  display: inline-grid !important;
+}
+
+.ext-hidden {
+  display: none !important;
+}
+
+.ext-w-auto {
+  width: auto !important;
+}
+
+.ext-w-full {
+  width: 100% !important;
+}
+
+.ext-max-w-full {
+  max-width: 100% !important;
+}
+
+.ext-flex-1 {
+  flex: 1 1 0% !important;
+}
+
+.ext-flex-auto {
+  flex: 1 1 auto !important;
+}
+
+.ext-flex-initial {
+  flex: 0 1 auto !important;
+}
+
+.ext-flex-none {
+  flex: none !important;
+}
+
+.ext-flex-shrink-0 {
+  flex-shrink: 0 !important;
+}
+
+.ext-flex-shrink {
+  flex-shrink: 1 !important;
+}
+
+.ext-flex-grow-0 {
+  flex-grow: 0 !important;
+}
+
+.ext-flex-grow {
+  flex-grow: 1 !important;
+}
+
+.ext-list-none {
+  list-style-type: none !important;
+}
+
+.ext-grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-7 {
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-8 {
+  grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-9 {
+  grid-template-columns: repeat(9, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-10 {
+  grid-template-columns: repeat(10, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-11 {
+  grid-template-columns: repeat(11, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-12 {
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-cols-none {
+  grid-template-columns: none !important;
+}
+
+.ext-grid-rows-1 {
+  grid-template-rows: repeat(1, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-rows-2 {
+  grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-rows-3 {
+  grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-rows-4 {
+  grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-rows-5 {
+  grid-template-rows: repeat(5, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-rows-6 {
+  grid-template-rows: repeat(6, minmax(0, 1fr)) !important;
+}
+
+.ext-grid-rows-none {
+  grid-template-rows: none !important;
+}
+
+.ext-flex-row {
+  flex-direction: row !important;
+}
+
+.ext-flex-row-reverse {
+  flex-direction: row-reverse !important;
+}
+
+.ext-flex-col {
+  flex-direction: column !important;
+}
+
+.ext-flex-col-reverse {
+  flex-direction: column-reverse !important;
+}
+
+.ext-flex-wrap {
+  flex-wrap: wrap !important;
+}
+
+.ext-flex-wrap-reverse {
+  flex-wrap: wrap-reverse !important;
+}
+
+.ext-flex-nowrap {
+  flex-wrap: nowrap !important;
+}
+
+.ext-items-start {
+  align-items: flex-start !important;
+}
+
+.ext-items-end {
+  align-items: flex-end !important;
+}
+
+.ext-items-center {
+  align-items: center !important;
+}
+
+.ext-items-baseline {
+  align-items: baseline !important;
+}
+
+.ext-items-stretch {
+  align-items: stretch !important;
+}
+
+.ext-justify-start {
+  justify-content: flex-start !important;
+}
+
+.ext-justify-end {
+  justify-content: flex-end !important;
+}
+
+.ext-justify-center {
+  justify-content: center !important;
+}
+
+.ext-justify-between {
+  justify-content: space-between !important;
+}
+
+.ext-justify-around {
+  justify-content: space-around !important;
+}
+
+.ext-justify-evenly {
+  justify-content: space-evenly !important;
+}
+
+.ext-justify-items-start {
+  justify-items: start !important;
+}
+
+.ext-justify-items-end {
+  justify-items: end !important;
+}
+
+.ext-justify-items-center {
+  justify-items: center !important;
+}
+
+.ext-justify-items-stretch {
+  justify-items: stretch !important;
+}
+
+.ext-gap-0 {
+  gap: 0 !important;
+}
+
+.ext-gap-base {
+  gap: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-gap-lg {
+  gap: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext-gap-x-0 {
+  -moz-column-gap: 0 !important;
+       column-gap: 0 !important;
+}
+
+.ext-gap-x-base {
+  -moz-column-gap: var(--wp--style--block-gap, 1.75rem) !important;
+       column-gap: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-gap-x-lg {
+  -moz-column-gap: var(--extendify--spacing--large, 3rem) !important;
+       column-gap: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext-gap-y-0 {
+  row-gap: 0 !important;
+}
+
+.ext-gap-y-base {
+  row-gap: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-gap-y-lg {
+  row-gap: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext-justify-self-auto {
+  justify-self: auto !important;
+}
+
+.ext-justify-self-start {
+  justify-self: start !important;
+}
+
+.ext-justify-self-end {
+  justify-self: end !important;
+}
+
+.ext-justify-self-center {
+  justify-self: center !important;
+}
+
+.ext-justify-self-stretch {
+  justify-self: stretch !important;
+}
+
+.ext-rounded-none {
+  border-radius: 0px !important;
+}
+
+.ext-rounded-full {
+  border-radius: 9999px !important;
+}
+
+.ext-rounded-t-none {
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+}
+
+.ext-rounded-t-full {
+  border-top-left-radius: 9999px !important;
+  border-top-right-radius: 9999px !important;
+}
+
+.ext-rounded-r-none {
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+.ext-rounded-r-full {
+  border-top-right-radius: 9999px !important;
+  border-bottom-right-radius: 9999px !important;
+}
+
+.ext-rounded-b-none {
+  border-bottom-right-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
+
+.ext-rounded-b-full {
+  border-bottom-right-radius: 9999px !important;
+  border-bottom-left-radius: 9999px !important;
+}
+
+.ext-rounded-l-none {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
+
+.ext-rounded-l-full {
+  border-top-left-radius: 9999px !important;
+  border-bottom-left-radius: 9999px !important;
+}
+
+.ext-rounded-tl-none {
+  border-top-left-radius: 0px !important;
+}
+
+.ext-rounded-tl-full {
+  border-top-left-radius: 9999px !important;
+}
+
+.ext-rounded-tr-none {
+  border-top-right-radius: 0px !important;
+}
+
+.ext-rounded-tr-full {
+  border-top-right-radius: 9999px !important;
+}
+
+.ext-rounded-br-none {
+  border-bottom-right-radius: 0px !important;
+}
+
+.ext-rounded-br-full {
+  border-bottom-right-radius: 9999px !important;
+}
+
+.ext-rounded-bl-none {
+  border-bottom-left-radius: 0px !important;
+}
+
+.ext-rounded-bl-full {
+  border-bottom-left-radius: 9999px !important;
+}
+
+.ext-border-0 {
+  border-width: 0px !important;
+}
+
+.ext-border-t-0 {
+  border-top-width: 0px !important;
+}
+
+.ext-border-r-0 {
+  border-right-width: 0px !important;
+}
+
+.ext-border-b-0 {
+  border-bottom-width: 0px !important;
+}
+
+.ext-border-l-0 {
+  border-left-width: 0px !important;
+}
+
+.ext-p-0:not([style*="padding"]) {
+  padding: 0 !important;
+}
+
+.ext-p-base:not([style*="padding"]) {
+  padding: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-p-lg:not([style*="padding"]) {
+  padding: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext-px-0:not([style*="padding"]) {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.ext-px-base:not([style*="padding"]) {
+  padding-left: var(--wp--style--block-gap, 1.75rem) !important;
+  padding-right: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-px-lg:not([style*="padding"]) {
+  padding-left: var(--extendify--spacing--large, 3rem) !important;
+  padding-right: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext-py-0:not([style*="padding"]) {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.ext-py-base:not([style*="padding"]) {
+  padding-top: var(--wp--style--block-gap, 1.75rem) !important;
+  padding-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-py-lg:not([style*="padding"]) {
+  padding-top: var(--extendify--spacing--large, 3rem) !important;
+  padding-bottom: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext-pt-0:not([style*="padding"]) {
+  padding-top: 0 !important;
+}
+
+.ext-pt-base:not([style*="padding"]) {
+  padding-top: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-pt-lg:not([style*="padding"]) {
+  padding-top: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext-pr-0:not([style*="padding"]) {
+  padding-right: 0 !important;
+}
+
+.ext-pr-base:not([style*="padding"]) {
+  padding-right: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-pr-lg:not([style*="padding"]) {
+  padding-right: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext-pb-0:not([style*="padding"]) {
+  padding-bottom: 0 !important;
+}
+
+.ext-pb-base:not([style*="padding"]) {
+  padding-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-pb-lg:not([style*="padding"]) {
+  padding-bottom: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext-pl-0:not([style*="padding"]) {
+  padding-left: 0 !important;
+}
+
+.ext-pl-base:not([style*="padding"]) {
+  padding-left: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.ext-pl-lg:not([style*="padding"]) {
+  padding-left: var(--extendify--spacing--large, 3rem) !important;
+}
+
+.ext-text-left {
+  text-align: left !important;
+}
+
+.ext-text-center {
+  text-align: center !important;
+}
+
+.ext-text-right {
+  text-align: right !important;
+}
+
+.ext-leading-none {
+  line-height: 1 !important;
+}
+
+.ext-leading-tight {
+  line-height: 1.25 !important;
+}
+
+.ext-leading-snug {
+  line-height: 1.375 !important;
+}
+
+.ext-leading-normal {
+  line-height: 1.5 !important;
+}
+
+.ext-leading-relaxed {
+  line-height: 1.625 !important;
+}
+
+.ext-leading-loose {
+  line-height: 2 !important;
+}
+
+.ext-aspect-square img {
+  aspect-ratio: 1 / 1 !important;
+  -o-object-fit: cover !important;
+     object-fit: cover !important;
+}
+
+.ext-aspect-landscape img {
+  aspect-ratio: 4 / 3 !important;
+  -o-object-fit: cover !important;
+     object-fit: cover !important;
+}
+
+.ext-aspect-landscape-wide img {
+  aspect-ratio: 16 / 9 !important;
+  -o-object-fit: cover !important;
+     object-fit: cover !important;
+}
+
+.ext-aspect-portrait img {
+  aspect-ratio: 3 / 4 !important;
+  -o-object-fit: cover !important;
+     object-fit: cover !important;
+}
+
+.ext-aspect-square .components-resizable-box__container,
+.ext-aspect-landscape .components-resizable-box__container,
+.ext-aspect-landscape-wide .components-resizable-box__container,
+.ext-aspect-portrait .components-resizable-box__container {
+  height: auto !important;
+}
+
+.clip-path--rhombus img {
+  -webkit-clip-path: polygon(15% 6%, 80% 29%, 84% 93%, 23% 69%) !important;
+          clip-path: polygon(15% 6%, 80% 29%, 84% 93%, 23% 69%) !important;
+}
+
+.clip-path--diamond img {
+  -webkit-clip-path: polygon(5% 29%, 60% 2%, 91% 64%, 36% 89%) !important;
+          clip-path: polygon(5% 29%, 60% 2%, 91% 64%, 36% 89%) !important;
+}
+
+.clip-path--rhombus-alt img {
+  -webkit-clip-path: polygon(14% 9%, 85% 24%, 91% 89%, 19% 76%) !important;
+          clip-path: polygon(14% 9%, 85% 24%, 91% 89%, 19% 76%) !important;
+}
+
+/*
+The .ext utility is a top-level class that we use to target contents within our patterns.
+We use it here to ensure columns blocks display well across themes.
+*/
+
+.wp-block-columns[class*="fullwidth-cols"] {
+  /* no suggestion */
+  margin-bottom: unset !important;
+}
+
+.wp-block-column.editor\:pointer-events-none {
+  /* no suggestion */
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.is-root-container.block-editor-block-list__layout
+    > [data-align="full"]:not(:first-of-type)
+    > .wp-block-column.editor\:pointer-events-none,
+.is-root-container.block-editor-block-list__layout
+    > [data-align="wide"]
+    > .wp-block-column.editor\:pointer-events-none {
+  /* no suggestion */
+  margin-top: calc(-1 * var(--wp--style--block-gap, 28px)) !important;
+}
+
+.is-root-container.block-editor-block-list__layout
+    > [data-align="full"]:not(:first-of-type)
+    > .ext-my-0,
+.is-root-container.block-editor-block-list__layout
+    > [data-align="wide"]
+    > .ext-my-0:not([style*="margin"]) {
+  /* no suggestion */
+  margin-top: calc(-1 * var(--wp--style--block-gap, 28px)) !important;
+}
+
+/* Some popular themes use padding instead of core margin for columns; remove it */
+
+.ext .wp-block-columns .wp-block-column[style*="padding"] {
+  /* no suggestion */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Some popular themes add double spacing between columns; remove it */
+
+.ext
+    .wp-block-columns
+    + .wp-block-columns:not([class*="mt-"]):not([class*="my-"]):not([style*="margin"]) {
+  /* no suggestion */
+  margin-top: 0 !important;
+}
+
+[class*="fullwidth-cols"] .wp-block-column:first-child,
+[class*="fullwidth-cols"] .wp-block-group:first-child {
+  /* no suggestion */
+}
+
+[class*="fullwidth-cols"] .wp-block-column:first-child, [class*="fullwidth-cols"] .wp-block-group:first-child {
+  margin-top: 0 !important;
+}
+
+[class*="fullwidth-cols"] .wp-block-column:last-child,
+[class*="fullwidth-cols"] .wp-block-group:last-child {
+  /* no suggestion */
+}
+
+[class*="fullwidth-cols"] .wp-block-column:last-child, [class*="fullwidth-cols"] .wp-block-group:last-child {
+  margin-bottom: 0 !important;
+}
+
+[class*="fullwidth-cols"] .wp-block-column:first-child > * {
+  /* no suggestion */
+  margin-top: 0 !important;
+}
+
+[class*="fullwidth-cols"] .wp-block-column > *:first-child {
+  /* no suggestion */
+  margin-top: 0 !important;
+}
+
+[class*="fullwidth-cols"] .wp-block-column > *:last-child {
+  /* no suggestion */
+  margin-bottom: 0 !important;
+}
+
+.ext .is-not-stacked-on-mobile .wp-block-column {
+  /* no suggestion */
+  margin-bottom: 0 !important;
+}
+
+/* Add base margin bottom to all columns */
+
+.wp-block-columns[class*="fullwidth-cols"]:not(.is-not-stacked-on-mobile)
+    > .wp-block-column:not(:last-child) {
+  /* no suggestion */
+  margin-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+@media (min-width: 782px) {
+  .wp-block-columns[class*="fullwidth-cols"]:not(.is-not-stacked-on-mobile)
+        > .wp-block-column:not(:last-child) {
+    /* no suggestion */
+    margin-bottom: 0 !important;
+  }
+}
+
+/* Remove margin bottom from "not-stacked" columns */
+
+.wp-block-columns[class*="fullwidth-cols"].is-not-stacked-on-mobile
+    > .wp-block-column {
+  /* no suggestion */
+  margin-bottom: 0 !important;
+}
+
+@media (min-width: 600px) and (max-width: 781px) {
+  .wp-block-columns[class*="fullwidth-cols"]:not(.is-not-stacked-on-mobile)
+        > .wp-block-column:nth-child(even) {
+    /* no suggestion */
+    margin-left: var(--wp--style--block-gap, 2em) !important;
+  }
+}
+
+/*
+    The `tablet:fullwidth-cols` and `desktop:fullwidth-cols` utilities are used
+    to counter the core/columns responsive for at our breakpoints.
+*/
+
+@media (max-width: 781px) {
+  .tablet\:fullwidth-cols.wp-block-columns:not(.is-not-stacked-on-mobile) {
+    flex-wrap: wrap !important;
+  }
+
+  .tablet\:fullwidth-cols.wp-block-columns:not(.is-not-stacked-on-mobile)
+        > .wp-block-column {
+    margin-left: 0 !important;
+  }
+
+  .tablet\:fullwidth-cols.wp-block-columns:not(.is-not-stacked-on-mobile)
+        > .wp-block-column:not([style*="margin"]) {
+    /* no suggestion */
+    margin-left: 0 !important;
+  }
+
+  .tablet\:fullwidth-cols.wp-block-columns:not(.is-not-stacked-on-mobile)
+        > .wp-block-column {
+    flex-basis: 100% !important; /* Required to negate core/columns flex-basis */
+  }
+}
+
+@media (max-width: 1079px) {
+  .desktop\:fullwidth-cols.wp-block-columns:not(.is-not-stacked-on-mobile) {
+    flex-wrap: wrap !important;
+  }
+
+  .desktop\:fullwidth-cols.wp-block-columns:not(.is-not-stacked-on-mobile)
+        > .wp-block-column {
+    margin-left: 0 !important;
+  }
+
+  .desktop\:fullwidth-cols.wp-block-columns:not(.is-not-stacked-on-mobile)
+        > .wp-block-column:not([style*="margin"]) {
+    /* no suggestion */
+    margin-left: 0 !important;
+  }
+
+  .desktop\:fullwidth-cols.wp-block-columns:not(.is-not-stacked-on-mobile)
+        > .wp-block-column {
+    flex-basis: 100% !important; /* Required to negate core/columns flex-basis */
+  }
+
+  .desktop\:fullwidth-cols.wp-block-columns:not(.is-not-stacked-on-mobile)
+        > .wp-block-column:not(:last-child) {
+    margin-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+}
+
+.direction-rtl {
+  direction: rtl !important;
+}
+
+.direction-ltr {
+  direction: ltr !important;
+}
+
+/* Use "is-style-" prefix to support adding this style to the core/list block */
+
+.is-style-inline-list {
+  padding-left: 0 !important;
+}
+
+.is-style-inline-list li {
+  /* no suggestion */
+  list-style-type: none !important;
+}
+
+@media (min-width: 782px) {
+  .is-style-inline-list li {
+    margin-right: var(--wp--style--block-gap, 1.75rem) !important;
+    display: inline !important;
+  }
+}
+
+.is-style-inline-list li:first-child {
+  /* no suggestion */
+}
+
+@media (min-width: 782px) {
+  .is-style-inline-list li:first-child {
+    margin-left: 0 !important;
+  }
+}
+
+.is-style-inline-list li:last-child {
+  /* no suggestion */
+}
+
+@media (min-width: 782px) {
+  .is-style-inline-list li:last-child {
+    margin-right: 0 !important;
+  }
+}
+
+.bring-to-front {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.text-stroke {
+  -webkit-text-stroke-width: var(
+        --wp--custom--typography--text-stroke-width,
+        2px
+    ) !important;
+  -webkit-text-stroke-color: var(--wp--preset--color--background) !important;
+}
+
+.text-stroke--primary {
+  -webkit-text-stroke-width: var(
+        --wp--custom--typography--text-stroke-width,
+        2px
+    ) !important;
+  -webkit-text-stroke-color: var(--wp--preset--color--primary) !important;
+}
+
+.text-stroke--secondary {
+  -webkit-text-stroke-width: var(
+        --wp--custom--typography--text-stroke-width,
+        2px
+    ) !important;
+  -webkit-text-stroke-color: var(--wp--preset--color--secondary) !important;
+}
+
+.editor\:no-caption .block-editor-rich-text__editable {
+  display: none !important;
+}
+
+.editor\:no-inserter > .block-list-appender,
+.editor\:no-inserter .wp-block-group__inner-container > .block-list-appender {
+  display: none !important;
+}
+
+.editor\:no-inserter .wp-block-cover__inner-container > .block-list-appender {
+  display: none !important;
+}
+
+.editor\:no-inserter .wp-block-column:not(.is-selected) > .block-list-appender {
+  display: none !important;
+}
+
+.editor\:no-resize .components-resizable-box__handle::after,
+.editor\:no-resize .components-resizable-box__side-handle::before,
+.editor\:no-resize .components-resizable-box__handle {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.editor\:no-resize .components-resizable-box__container {
+  display: block !important;
+}
+
+.editor\:pointer-events-none {
+  pointer-events: none !important;
+}
+
+.is-style-angled {
+  /* no suggestion */
+  align-items: center !important;
+  justify-content: flex-end !important;
+}
+
+.ext .is-style-angled > [class*="_inner-container"] {
+  align-items: center !important;
+}
+
+.is-style-angled .wp-block-cover__image-background,
+.is-style-angled .wp-block-cover__video-background {
+  /* no suggestion */
+  -webkit-clip-path: polygon(0 0, 30% 0%, 50% 100%, 0% 100%) !important;
+          clip-path: polygon(0 0, 30% 0%, 50% 100%, 0% 100%) !important;
+  z-index: 1 !important;
+}
+
+@media (min-width: 782px) {
+  .is-style-angled .wp-block-cover__image-background,
+    .is-style-angled .wp-block-cover__video-background {
+    /* no suggestion */
+    -webkit-clip-path: polygon(0 0, 55% 0%, 65% 100%, 0% 100%) !important;
+            clip-path: polygon(0 0, 55% 0%, 65% 100%, 0% 100%) !important;
+  }
+}
+
+.has-foreground-color {
+  /* no suggestion */
+  color: var(--wp--preset--color--foreground, #000) !important;
+}
+
+.has-foreground-background-color {
+  /* no suggestion */
+  background-color: var(--wp--preset--color--foreground, #000) !important;
+}
+
+.has-background-color {
+  /* no suggestion */
+  color: var(--wp--preset--color--background, #fff) !important;
+}
+
+.has-background-background-color {
+  /* no suggestion */
+  background-color: var(--wp--preset--color--background, #fff) !important;
+}
+
+.has-primary-color {
+  /* no suggestion */
+  color: var(--wp--preset--color--primary, #4b5563) !important;
+}
+
+.has-primary-background-color {
+  /* no suggestion */
+  background-color: var(--wp--preset--color--primary, #4b5563) !important;
+}
+
+.has-secondary-color {
+  /* no suggestion */
+  color: var(--wp--preset--color--secondary, #9ca3af) !important;
+}
+
+.has-secondary-background-color {
+  /* no suggestion */
+  background-color: var(--wp--preset--color--secondary, #9ca3af) !important;
+}
+
+/* Ensure themes that target specific elements use the right colors */
+
+.ext.has-text-color p,
+.ext.has-text-color h1,
+.ext.has-text-color h2,
+.ext.has-text-color h3,
+.ext.has-text-color h4,
+.ext.has-text-color h5,
+.ext.has-text-color h6 {
+  /* no suggestion */
+  color: currentColor !important;
+}
+
+.has-white-color {
+  /* no suggestion */
+  color: var(--wp--preset--color--white, #fff) !important;
+}
+
+.has-black-color {
+  /* no suggestion */
+  color: var(--wp--preset--color--black, #000) !important;
+}
+
+.has-ext-foreground-background-color {
+  /* no suggestion */
+  background-color: var(
+        --wp--preset--color--foreground,
+        var(--wp--preset--color--black, #000)
+    ) !important;
+}
+
+.has-ext-primary-background-color {
+  /* no suggestion */
+  background-color: var(
+        --wp--preset--color--primary,
+        var(--wp--preset--color--cyan-bluish-gray, #000)
+    ) !important;
+}
+
+/* Fix button borders with specified background colors */
+
+.wp-block-button__link.has-black-background-color {
+  /* no suggestion */
+  border-color: var(--wp--preset--color--black, #000) !important;
+}
+
+.wp-block-button__link.has-white-background-color {
+  /* no suggestion */
+  border-color: var(--wp--preset--color--white, #fff) !important;
+}
+
+.has-ext-small-font-size {
+  /* no suggestion */
+  font-size: var(--wp--preset--font-size--ext-small) !important;
+}
+
+.has-ext-medium-font-size {
+  /* no suggestion */
+  font-size: var(--wp--preset--font-size--ext-medium) !important;
+}
+
+.has-ext-large-font-size {
+  /* no suggestion */
+  font-size: var(--wp--preset--font-size--ext-large) !important;
+  line-height: 1.2 !important;
+}
+
+.has-ext-x-large-font-size {
+  /* no suggestion */
+  font-size: var(--wp--preset--font-size--ext-x-large) !important;
+  line-height: 1 !important;
+}
+
+.has-ext-xx-large-font-size {
+  /* no suggestion */
+  font-size: var(--wp--preset--font-size--ext-xx-large) !important;
+  line-height: 1 !important;
+}
+
+/* Line height */
+
+.has-ext-x-large-font-size:not([style*="line-height"]) {
+  /* no suggestion */
+  line-height: 1.1 !important;
+}
+
+.has-ext-xx-large-font-size:not([style*="line-height"]) {
+  /* no suggestion */
+  line-height: 1.1 !important;
+}
+
+.ext .wp-block-group > * {
+  /* Line height */
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.ext .wp-block-group > * + * {
+  margin-top: var(--wp--style--block-gap, 1.75rem) !important;
+  margin-bottom: 0 !important;
+}
+
+.ext h2 {
+  margin-top: var(--wp--style--block-gap, 1.75rem) !important;
+  margin-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+.has-ext-x-large-font-size + p,
+.has-ext-x-large-font-size + h3 {
+  margin-top: 0.5rem !important;
+}
+
+.ext .wp-block-buttons > .wp-block-button.wp-block-button__width-25 {
+  width: calc(25% - var(--wp--style--block-gap, 0.5em) * 0.75) !important;
+  min-width: 12rem !important;
+}
+
+/* Classic themes use an inner [class*="_inner-container"] that our utilities cannot directly target, so we need to do so with a few */
+
+.ext .ext-grid > [class*="_inner-container"] {
+  /* no suggestion */
+  display: grid !important;
+}
+
+/* Unhinge grid for container blocks in classic themes, and < 5.9 */
+
+.ext > [class*="_inner-container"] > .ext-grid:not([class*="columns"]),
+.ext
+    > [class*="_inner-container"]
+    > .wp-block
+    > .ext-grid:not([class*="columns"]) {
+  /* no suggestion */
+  display: initial !important;
+}
+
+/* Grid Columns */
+
+.ext .ext-grid-cols-1 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-2 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-3 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-4 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-5 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-6 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-7 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-8 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-9 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(9, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-10 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(10, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-11 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(11, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-12 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-13 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: repeat(13, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-cols-none > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-columns: none !important;
+}
+
+/* Grid Rows */
+
+.ext .ext-grid-rows-1 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-rows: repeat(1, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-rows-2 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-rows-3 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-rows-4 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-rows-5 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-rows: repeat(5, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-rows-6 > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-rows: repeat(6, minmax(0, 1fr)) !important;
+}
+
+.ext .ext-grid-rows-none > [class*="_inner-container"] {
+  /* no suggestion */
+  grid-template-rows: none !important;
+}
+
+/* Align */
+
+.ext .ext-items-start > [class*="_inner-container"] {
+  align-items: flex-start !important;
+}
+
+.ext .ext-items-end > [class*="_inner-container"] {
+  align-items: flex-end !important;
+}
+
+.ext .ext-items-center > [class*="_inner-container"] {
+  align-items: center !important;
+}
+
+.ext .ext-items-baseline > [class*="_inner-container"] {
+  align-items: baseline !important;
+}
+
+.ext .ext-items-stretch > [class*="_inner-container"] {
+  align-items: stretch !important;
+}
+
+.ext.wp-block-group > *:last-child {
+  /* no suggestion */
+  margin-bottom: 0 !important;
+}
+
+/* For <5.9 */
+
+.ext .wp-block-group__inner-container {
+  /* no suggestion */
+  padding: 0 !important;
+}
+
+.ext.has-background {
+  /* no suggestion */
+  padding-left: var(--wp--style--block-gap, 1.75rem) !important;
+  padding-right: var(--wp--style--block-gap, 1.75rem) !important;
+}
+
+/* Fallback for classic theme group blocks */
+
+.ext *[class*="inner-container"] > .alignwide *[class*="inner-container"],
+.ext
+    *[class*="inner-container"]
+    > [data-align="wide"]
+    *[class*="inner-container"] {
+  /* no suggestion */
+  max-width: var(--responsive--alignwide-width, 120rem) !important;
+}
+
+.ext *[class*="inner-container"] > .alignwide *[class*="inner-container"] > *,
+.ext
+    *[class*="inner-container"]
+    > [data-align="wide"]
+    *[class*="inner-container"]
+    > * {
+  /* no suggestion */
+}
+
+.ext *[class*="inner-container"] > .alignwide *[class*="inner-container"] > *, .ext
+    *[class*="inner-container"]
+    > [data-align="wide"]
+    *[class*="inner-container"]
+    > * {
+  max-width: 100% !important;
+}
+
+/* Ensure image block display is standardized */
+
+.ext .wp-block-image {
+  /* no suggestion */
+  position: relative !important;
+  text-align: center !important;
+}
+
+.ext .wp-block-image img {
+  /* no suggestion */
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+body {
+  /* no suggestion */
+  /* We need to abstract this out of tailwind.config because clamp doesnt translate with negative margins */
+  --extendify--spacing--large: var(
+        --wp--custom--spacing--large,
+        clamp(2em, 8vw, 8em)
+    ) !important;
+  /* Add pattern preset font sizes */
+  --wp--preset--font-size--ext-small: 1rem !important;
+  --wp--preset--font-size--ext-medium: 1.125rem !important;
+  --wp--preset--font-size--ext-large: clamp(1.65rem, 3.5vw, 2.15rem) !important;
+  --wp--preset--font-size--ext-x-large: clamp(3rem, 6vw, 4.75rem) !important;
+  --wp--preset--font-size--ext-xx-large: clamp(3.25rem, 7.5vw, 5.75rem) !important;
+  /* Fallbacks for pre 5.9 themes */
+  --wp--preset--color--black: #000 !important;
+  --wp--preset--color--white: #fff !important;
+}
+
+.ext * {
+  box-sizing: border-box !important;
+}
+
+/* Astra: Remove spacer block visuals in the library */
+
+.block-editor-block-preview__content-iframe
+    .ext
+    [data-type="core/spacer"]
+    .components-resizable-box__container {
+  /* no suggestion */
+  background: transparent !important;
+}
+
+.block-editor-block-preview__content-iframe
+    .ext
+    [data-type="core/spacer"]
+    .block-library-spacer__resize-container::before {
+  /* no suggestion */
+  display: none !important;
+}
+
+/* Twenty Twenty adds a lot of margin automatically to blocks. We only want our own margin added to our patterns. */
+
+.ext .wp-block-group__inner-container figure.wp-block-gallery.alignfull {
+  /* no suggestion */
+  margin-top: unset !important;
+  margin-bottom: unset !important;
+}
+
+/* Ensure no funky business is assigned to alignwide */
+
+.ext .alignwide {
+  /* no suggestion */
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Negate blockGap being inappropriately assigned in the editor */
+
+.is-root-container.block-editor-block-list__layout
+    > [data-align="full"]:not(:first-of-type)
+    > .ext-my-0,
+.is-root-container.block-editor-block-list__layout
+    > [data-align="wide"]
+    > .ext-my-0:not([style*="margin"]) {
+  /* no suggestion */
+  margin-top: calc(-1 * var(--wp--style--block-gap, 28px)) !important;
+}
+
+/* Ensure vh content in previews looks taller */
+
+.block-editor-block-preview__content-iframe .preview\:min-h-50 {
+  /* no suggestion */
+  min-height: 50vw !important;
+}
+
+.block-editor-block-preview__content-iframe .preview\:min-h-60 {
+  /* no suggestion */
+  min-height: 60vw !important;
+}
+
+.block-editor-block-preview__content-iframe .preview\:min-h-70 {
+  /* no suggestion */
+  min-height: 70vw !important;
+}
+
+.block-editor-block-preview__content-iframe .preview\:min-h-80 {
+  /* no suggestion */
+  min-height: 80vw !important;
+}
+
+.block-editor-block-preview__content-iframe .preview\:min-h-100 {
+  /* no suggestion */
+  min-height: 100vw !important;
+}
+
+/*  Removes excess margin when applied to the alignfull parent div in Block Themes */
+
+.ext-mr-0.alignfull:not([style*="margin"]):not([style*="margin"]) {
+  /* no suggestion */
+  margin-right: 0 !important;
+}
+
+.ext-ml-0:not([style*="margin"]):not([style*="margin"]) {
+  /* no suggestion */
+  margin-left: 0 !important;
+}
+
+/*  Ensures fullwidth blocks display properly in the editor when margin is zeroed out */
+
+.is-root-container
+    .wp-block[data-align="full"]
+    > .ext-mx-0:not([style*="margin"]):not([style*="margin"]) {
+  /* no suggestion */
+  margin-right: calc(1 * var(--wp--custom--spacing--outer, 0)) !important;
+  margin-left: calc(1 * var(--wp--custom--spacing--outer, 0)) !important;
+  overflow: hidden !important;
+  width: unset !important;
+}
+
+@media (min-width: 782px) {
+  .tablet\:ext-absolute {
+    position: absolute !important;
+  }
+
+  .tablet\:ext-relative {
+    position: relative !important;
+  }
+
+  .tablet\:ext-top-base {
+    top: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-top-lg {
+    top: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--top-base {
+    top: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--top-lg {
+    top: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-right-base {
+    right: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-right-lg {
+    right: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--right-base {
+    right: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--right-lg {
+    right: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-bottom-base {
+    bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-bottom-lg {
+    bottom: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--bottom-base {
+    bottom: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--bottom-lg {
+    bottom: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-left-base {
+    left: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-left-lg {
+    left: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--left-base {
+    left: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--left-lg {
+    left: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-order-1 {
+    order: 1 !important;
+  }
+
+  .tablet\:ext-order-2 {
+    order: 2 !important;
+  }
+
+  .tablet\:ext-m-0:not([style*="margin"]) {
+    margin: 0 !important;
+  }
+
+  .tablet\:ext-m-auto:not([style*="margin"]) {
+    margin: auto !important;
+  }
+
+  .tablet\:ext-m-base:not([style*="margin"]) {
+    margin: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-m-lg:not([style*="margin"]) {
+    margin: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--m-base:not([style*="margin"]) {
+    margin: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--m-lg:not([style*="margin"]) {
+    margin: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-mx-0:not([style*="margin"]) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .tablet\:ext-mx-auto:not([style*="margin"]) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .tablet\:ext-mx-base:not([style*="margin"]) {
+    margin-left: var(--wp--style--block-gap, 1.75rem) !important;
+    margin-right: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-mx-lg:not([style*="margin"]) {
+    margin-left: var(--extendify--spacing--large, 3rem) !important;
+    margin-right: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--mx-base:not([style*="margin"]) {
+    margin-left: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+    margin-right: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--mx-lg:not([style*="margin"]) {
+    margin-left: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+    margin-right: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-my-0:not([style*="margin"]) {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .tablet\:ext-my-auto:not([style*="margin"]) {
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+  }
+
+  .tablet\:ext-my-base:not([style*="margin"]) {
+    margin-top: var(--wp--style--block-gap, 1.75rem) !important;
+    margin-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-my-lg:not([style*="margin"]) {
+    margin-top: var(--extendify--spacing--large, 3rem) !important;
+    margin-bottom: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--my-base:not([style*="margin"]) {
+    margin-top: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+    margin-bottom: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--my-lg:not([style*="margin"]) {
+    margin-top: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+    margin-bottom: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-mt-0:not([style*="margin"]) {
+    margin-top: 0 !important;
+  }
+
+  .tablet\:ext-mt-auto:not([style*="margin"]) {
+    margin-top: auto !important;
+  }
+
+  .tablet\:ext-mt-base:not([style*="margin"]) {
+    margin-top: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-mt-lg:not([style*="margin"]) {
+    margin-top: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--mt-base:not([style*="margin"]) {
+    margin-top: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--mt-lg:not([style*="margin"]) {
+    margin-top: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-mr-0:not([style*="margin"]) {
+    margin-right: 0 !important;
+  }
+
+  .tablet\:ext-mr-auto:not([style*="margin"]) {
+    margin-right: auto !important;
+  }
+
+  .tablet\:ext-mr-base:not([style*="margin"]) {
+    margin-right: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-mr-lg:not([style*="margin"]) {
+    margin-right: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--mr-base:not([style*="margin"]) {
+    margin-right: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--mr-lg:not([style*="margin"]) {
+    margin-right: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-mb-0:not([style*="margin"]) {
+    margin-bottom: 0 !important;
+  }
+
+  .tablet\:ext-mb-auto:not([style*="margin"]) {
+    margin-bottom: auto !important;
+  }
+
+  .tablet\:ext-mb-base:not([style*="margin"]) {
+    margin-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-mb-lg:not([style*="margin"]) {
+    margin-bottom: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--mb-base:not([style*="margin"]) {
+    margin-bottom: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--mb-lg:not([style*="margin"]) {
+    margin-bottom: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-ml-0:not([style*="margin"]) {
+    margin-left: 0 !important;
+  }
+
+  .tablet\:ext-ml-auto:not([style*="margin"]) {
+    margin-left: auto !important;
+  }
+
+  .tablet\:ext-ml-base:not([style*="margin"]) {
+    margin-left: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-ml-lg:not([style*="margin"]) {
+    margin-left: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext--ml-base:not([style*="margin"]) {
+    margin-left: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .tablet\:ext--ml-lg:not([style*="margin"]) {
+    margin-left: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .tablet\:ext-block {
+    display: block !important;
+  }
+
+  .tablet\:ext-inline-block {
+    display: inline-block !important;
+  }
+
+  .tablet\:ext-inline {
+    display: inline !important;
+  }
+
+  .tablet\:ext-flex {
+    display: flex !important;
+  }
+
+  .tablet\:ext-inline-flex {
+    display: inline-flex !important;
+  }
+
+  .tablet\:ext-grid {
+    display: grid !important;
+  }
+
+  .tablet\:ext-inline-grid {
+    display: inline-grid !important;
+  }
+
+  .tablet\:ext-hidden {
+    display: none !important;
+  }
+
+  .tablet\:ext-w-auto {
+    width: auto !important;
+  }
+
+  .tablet\:ext-w-full {
+    width: 100% !important;
+  }
+
+  .tablet\:ext-max-w-full {
+    max-width: 100% !important;
+  }
+
+  .tablet\:ext-flex-1 {
+    flex: 1 1 0% !important;
+  }
+
+  .tablet\:ext-flex-auto {
+    flex: 1 1 auto !important;
+  }
+
+  .tablet\:ext-flex-initial {
+    flex: 0 1 auto !important;
+  }
+
+  .tablet\:ext-flex-none {
+    flex: none !important;
+  }
+
+  .tablet\:ext-flex-shrink-0 {
+    flex-shrink: 0 !important;
+  }
+
+  .tablet\:ext-flex-shrink {
+    flex-shrink: 1 !important;
+  }
+
+  .tablet\:ext-flex-grow-0 {
+    flex-grow: 0 !important;
+  }
+
+  .tablet\:ext-flex-grow {
+    flex-grow: 1 !important;
+  }
+
+  .tablet\:ext-list-none {
+    list-style-type: none !important;
+  }
+
+  .tablet\:ext-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-7 {
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-8 {
+    grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-9 {
+    grid-template-columns: repeat(9, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-10 {
+    grid-template-columns: repeat(10, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-11 {
+    grid-template-columns: repeat(11, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-12 {
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  }
+
+  .tablet\:ext-grid-cols-none {
+    grid-template-columns: none !important;
+  }
+
+  .tablet\:ext-flex-row {
+    flex-direction: row !important;
+  }
+
+  .tablet\:ext-flex-row-reverse {
+    flex-direction: row-reverse !important;
+  }
+
+  .tablet\:ext-flex-col {
+    flex-direction: column !important;
+  }
+
+  .tablet\:ext-flex-col-reverse {
+    flex-direction: column-reverse !important;
+  }
+
+  .tablet\:ext-flex-wrap {
+    flex-wrap: wrap !important;
+  }
+
+  .tablet\:ext-flex-wrap-reverse {
+    flex-wrap: wrap-reverse !important;
+  }
+
+  .tablet\:ext-flex-nowrap {
+    flex-wrap: nowrap !important;
+  }
+
+  .tablet\:ext-items-start {
+    align-items: flex-start !important;
+  }
+
+  .tablet\:ext-items-end {
+    align-items: flex-end !important;
+  }
+
+  .tablet\:ext-items-center {
+    align-items: center !important;
+  }
+
+  .tablet\:ext-items-baseline {
+    align-items: baseline !important;
+  }
+
+  .tablet\:ext-items-stretch {
+    align-items: stretch !important;
+  }
+
+  .tablet\:ext-justify-start {
+    justify-content: flex-start !important;
+  }
+
+  .tablet\:ext-justify-end {
+    justify-content: flex-end !important;
+  }
+
+  .tablet\:ext-justify-center {
+    justify-content: center !important;
+  }
+
+  .tablet\:ext-justify-between {
+    justify-content: space-between !important;
+  }
+
+  .tablet\:ext-justify-around {
+    justify-content: space-around !important;
+  }
+
+  .tablet\:ext-justify-evenly {
+    justify-content: space-evenly !important;
+  }
+
+  .tablet\:ext-justify-items-start {
+    justify-items: start !important;
+  }
+
+  .tablet\:ext-justify-items-end {
+    justify-items: end !important;
+  }
+
+  .tablet\:ext-justify-items-center {
+    justify-items: center !important;
+  }
+
+  .tablet\:ext-justify-items-stretch {
+    justify-items: stretch !important;
+  }
+
+  .tablet\:ext-justify-self-auto {
+    justify-self: auto !important;
+  }
+
+  .tablet\:ext-justify-self-start {
+    justify-self: start !important;
+  }
+
+  .tablet\:ext-justify-self-end {
+    justify-self: end !important;
+  }
+
+  .tablet\:ext-justify-self-center {
+    justify-self: center !important;
+  }
+
+  .tablet\:ext-justify-self-stretch {
+    justify-self: stretch !important;
+  }
+
+  .tablet\:ext-p-0:not([style*="padding"]) {
+    padding: 0 !important;
+  }
+
+  .tablet\:ext-p-base:not([style*="padding"]) {
+    padding: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-p-lg:not([style*="padding"]) {
+    padding: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext-px-0:not([style*="padding"]) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .tablet\:ext-px-base:not([style*="padding"]) {
+    padding-left: var(--wp--style--block-gap, 1.75rem) !important;
+    padding-right: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-px-lg:not([style*="padding"]) {
+    padding-left: var(--extendify--spacing--large, 3rem) !important;
+    padding-right: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext-py-0:not([style*="padding"]) {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .tablet\:ext-py-base:not([style*="padding"]) {
+    padding-top: var(--wp--style--block-gap, 1.75rem) !important;
+    padding-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-py-lg:not([style*="padding"]) {
+    padding-top: var(--extendify--spacing--large, 3rem) !important;
+    padding-bottom: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext-pt-0:not([style*="padding"]) {
+    padding-top: 0 !important;
+  }
+
+  .tablet\:ext-pt-base:not([style*="padding"]) {
+    padding-top: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-pt-lg:not([style*="padding"]) {
+    padding-top: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext-pr-0:not([style*="padding"]) {
+    padding-right: 0 !important;
+  }
+
+  .tablet\:ext-pr-base:not([style*="padding"]) {
+    padding-right: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-pr-lg:not([style*="padding"]) {
+    padding-right: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext-pb-0:not([style*="padding"]) {
+    padding-bottom: 0 !important;
+  }
+
+  .tablet\:ext-pb-base:not([style*="padding"]) {
+    padding-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-pb-lg:not([style*="padding"]) {
+    padding-bottom: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext-pl-0:not([style*="padding"]) {
+    padding-left: 0 !important;
+  }
+
+  .tablet\:ext-pl-base:not([style*="padding"]) {
+    padding-left: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .tablet\:ext-pl-lg:not([style*="padding"]) {
+    padding-left: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .tablet\:ext-text-left {
+    text-align: left !important;
+  }
+
+  .tablet\:ext-text-center {
+    text-align: center !important;
+  }
+
+  .tablet\:ext-text-right {
+    text-align: right !important;
+  }
+}
+
+@media (min-width: 1080px) {
+  .desktop\:ext-absolute {
+    position: absolute !important;
+  }
+
+  .desktop\:ext-relative {
+    position: relative !important;
+  }
+
+  .desktop\:ext-top-base {
+    top: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-top-lg {
+    top: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--top-base {
+    top: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--top-lg {
+    top: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-right-base {
+    right: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-right-lg {
+    right: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--right-base {
+    right: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--right-lg {
+    right: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-bottom-base {
+    bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-bottom-lg {
+    bottom: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--bottom-base {
+    bottom: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--bottom-lg {
+    bottom: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-left-base {
+    left: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-left-lg {
+    left: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--left-base {
+    left: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--left-lg {
+    left: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-order-1 {
+    order: 1 !important;
+  }
+
+  .desktop\:ext-order-2 {
+    order: 2 !important;
+  }
+
+  .desktop\:ext-m-0:not([style*="margin"]) {
+    margin: 0 !important;
+  }
+
+  .desktop\:ext-m-auto:not([style*="margin"]) {
+    margin: auto !important;
+  }
+
+  .desktop\:ext-m-base:not([style*="margin"]) {
+    margin: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-m-lg:not([style*="margin"]) {
+    margin: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--m-base:not([style*="margin"]) {
+    margin: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--m-lg:not([style*="margin"]) {
+    margin: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-mx-0:not([style*="margin"]) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .desktop\:ext-mx-auto:not([style*="margin"]) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .desktop\:ext-mx-base:not([style*="margin"]) {
+    margin-left: var(--wp--style--block-gap, 1.75rem) !important;
+    margin-right: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-mx-lg:not([style*="margin"]) {
+    margin-left: var(--extendify--spacing--large, 3rem) !important;
+    margin-right: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--mx-base:not([style*="margin"]) {
+    margin-left: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+    margin-right: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--mx-lg:not([style*="margin"]) {
+    margin-left: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+    margin-right: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-my-0:not([style*="margin"]) {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .desktop\:ext-my-auto:not([style*="margin"]) {
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+  }
+
+  .desktop\:ext-my-base:not([style*="margin"]) {
+    margin-top: var(--wp--style--block-gap, 1.75rem) !important;
+    margin-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-my-lg:not([style*="margin"]) {
+    margin-top: var(--extendify--spacing--large, 3rem) !important;
+    margin-bottom: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--my-base:not([style*="margin"]) {
+    margin-top: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+    margin-bottom: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--my-lg:not([style*="margin"]) {
+    margin-top: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+    margin-bottom: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-mt-0:not([style*="margin"]) {
+    margin-top: 0 !important;
+  }
+
+  .desktop\:ext-mt-auto:not([style*="margin"]) {
+    margin-top: auto !important;
+  }
+
+  .desktop\:ext-mt-base:not([style*="margin"]) {
+    margin-top: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-mt-lg:not([style*="margin"]) {
+    margin-top: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--mt-base:not([style*="margin"]) {
+    margin-top: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--mt-lg:not([style*="margin"]) {
+    margin-top: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-mr-0:not([style*="margin"]) {
+    margin-right: 0 !important;
+  }
+
+  .desktop\:ext-mr-auto:not([style*="margin"]) {
+    margin-right: auto !important;
+  }
+
+  .desktop\:ext-mr-base:not([style*="margin"]) {
+    margin-right: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-mr-lg:not([style*="margin"]) {
+    margin-right: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--mr-base:not([style*="margin"]) {
+    margin-right: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--mr-lg:not([style*="margin"]) {
+    margin-right: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-mb-0:not([style*="margin"]) {
+    margin-bottom: 0 !important;
+  }
+
+  .desktop\:ext-mb-auto:not([style*="margin"]) {
+    margin-bottom: auto !important;
+  }
+
+  .desktop\:ext-mb-base:not([style*="margin"]) {
+    margin-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-mb-lg:not([style*="margin"]) {
+    margin-bottom: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--mb-base:not([style*="margin"]) {
+    margin-bottom: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--mb-lg:not([style*="margin"]) {
+    margin-bottom: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-ml-0:not([style*="margin"]) {
+    margin-left: 0 !important;
+  }
+
+  .desktop\:ext-ml-auto:not([style*="margin"]) {
+    margin-left: auto !important;
+  }
+
+  .desktop\:ext-ml-base:not([style*="margin"]) {
+    margin-left: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-ml-lg:not([style*="margin"]) {
+    margin-left: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext--ml-base:not([style*="margin"]) {
+    margin-left: calc(var(--wp--style--block-gap, 1.75rem) * -1) !important;
+  }
+
+  .desktop\:ext--ml-lg:not([style*="margin"]) {
+    margin-left: calc(var(--extendify--spacing--large, 3rem) * -1) !important;
+  }
+
+  .desktop\:ext-block {
+    display: block !important;
+  }
+
+  .desktop\:ext-inline-block {
+    display: inline-block !important;
+  }
+
+  .desktop\:ext-inline {
+    display: inline !important;
+  }
+
+  .desktop\:ext-flex {
+    display: flex !important;
+  }
+
+  .desktop\:ext-inline-flex {
+    display: inline-flex !important;
+  }
+
+  .desktop\:ext-grid {
+    display: grid !important;
+  }
+
+  .desktop\:ext-inline-grid {
+    display: inline-grid !important;
+  }
+
+  .desktop\:ext-hidden {
+    display: none !important;
+  }
+
+  .desktop\:ext-w-auto {
+    width: auto !important;
+  }
+
+  .desktop\:ext-w-full {
+    width: 100% !important;
+  }
+
+  .desktop\:ext-max-w-full {
+    max-width: 100% !important;
+  }
+
+  .desktop\:ext-flex-1 {
+    flex: 1 1 0% !important;
+  }
+
+  .desktop\:ext-flex-auto {
+    flex: 1 1 auto !important;
+  }
+
+  .desktop\:ext-flex-initial {
+    flex: 0 1 auto !important;
+  }
+
+  .desktop\:ext-flex-none {
+    flex: none !important;
+  }
+
+  .desktop\:ext-flex-shrink-0 {
+    flex-shrink: 0 !important;
+  }
+
+  .desktop\:ext-flex-shrink {
+    flex-shrink: 1 !important;
+  }
+
+  .desktop\:ext-flex-grow-0 {
+    flex-grow: 0 !important;
+  }
+
+  .desktop\:ext-flex-grow {
+    flex-grow: 1 !important;
+  }
+
+  .desktop\:ext-list-none {
+    list-style-type: none !important;
+  }
+
+  .desktop\:ext-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-7 {
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-8 {
+    grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-9 {
+    grid-template-columns: repeat(9, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-10 {
+    grid-template-columns: repeat(10, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-11 {
+    grid-template-columns: repeat(11, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-12 {
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  }
+
+  .desktop\:ext-grid-cols-none {
+    grid-template-columns: none !important;
+  }
+
+  .desktop\:ext-flex-row {
+    flex-direction: row !important;
+  }
+
+  .desktop\:ext-flex-row-reverse {
+    flex-direction: row-reverse !important;
+  }
+
+  .desktop\:ext-flex-col {
+    flex-direction: column !important;
+  }
+
+  .desktop\:ext-flex-col-reverse {
+    flex-direction: column-reverse !important;
+  }
+
+  .desktop\:ext-flex-wrap {
+    flex-wrap: wrap !important;
+  }
+
+  .desktop\:ext-flex-wrap-reverse {
+    flex-wrap: wrap-reverse !important;
+  }
+
+  .desktop\:ext-flex-nowrap {
+    flex-wrap: nowrap !important;
+  }
+
+  .desktop\:ext-items-start {
+    align-items: flex-start !important;
+  }
+
+  .desktop\:ext-items-end {
+    align-items: flex-end !important;
+  }
+
+  .desktop\:ext-items-center {
+    align-items: center !important;
+  }
+
+  .desktop\:ext-items-baseline {
+    align-items: baseline !important;
+  }
+
+  .desktop\:ext-items-stretch {
+    align-items: stretch !important;
+  }
+
+  .desktop\:ext-justify-start {
+    justify-content: flex-start !important;
+  }
+
+  .desktop\:ext-justify-end {
+    justify-content: flex-end !important;
+  }
+
+  .desktop\:ext-justify-center {
+    justify-content: center !important;
+  }
+
+  .desktop\:ext-justify-between {
+    justify-content: space-between !important;
+  }
+
+  .desktop\:ext-justify-around {
+    justify-content: space-around !important;
+  }
+
+  .desktop\:ext-justify-evenly {
+    justify-content: space-evenly !important;
+  }
+
+  .desktop\:ext-justify-items-start {
+    justify-items: start !important;
+  }
+
+  .desktop\:ext-justify-items-end {
+    justify-items: end !important;
+  }
+
+  .desktop\:ext-justify-items-center {
+    justify-items: center !important;
+  }
+
+  .desktop\:ext-justify-items-stretch {
+    justify-items: stretch !important;
+  }
+
+  .desktop\:ext-justify-self-auto {
+    justify-self: auto !important;
+  }
+
+  .desktop\:ext-justify-self-start {
+    justify-self: start !important;
+  }
+
+  .desktop\:ext-justify-self-end {
+    justify-self: end !important;
+  }
+
+  .desktop\:ext-justify-self-center {
+    justify-self: center !important;
+  }
+
+  .desktop\:ext-justify-self-stretch {
+    justify-self: stretch !important;
+  }
+
+  .desktop\:ext-p-0:not([style*="padding"]) {
+    padding: 0 !important;
+  }
+
+  .desktop\:ext-p-base:not([style*="padding"]) {
+    padding: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-p-lg:not([style*="padding"]) {
+    padding: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext-px-0:not([style*="padding"]) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .desktop\:ext-px-base:not([style*="padding"]) {
+    padding-left: var(--wp--style--block-gap, 1.75rem) !important;
+    padding-right: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-px-lg:not([style*="padding"]) {
+    padding-left: var(--extendify--spacing--large, 3rem) !important;
+    padding-right: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext-py-0:not([style*="padding"]) {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .desktop\:ext-py-base:not([style*="padding"]) {
+    padding-top: var(--wp--style--block-gap, 1.75rem) !important;
+    padding-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-py-lg:not([style*="padding"]) {
+    padding-top: var(--extendify--spacing--large, 3rem) !important;
+    padding-bottom: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext-pt-0:not([style*="padding"]) {
+    padding-top: 0 !important;
+  }
+
+  .desktop\:ext-pt-base:not([style*="padding"]) {
+    padding-top: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-pt-lg:not([style*="padding"]) {
+    padding-top: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext-pr-0:not([style*="padding"]) {
+    padding-right: 0 !important;
+  }
+
+  .desktop\:ext-pr-base:not([style*="padding"]) {
+    padding-right: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-pr-lg:not([style*="padding"]) {
+    padding-right: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext-pb-0:not([style*="padding"]) {
+    padding-bottom: 0 !important;
+  }
+
+  .desktop\:ext-pb-base:not([style*="padding"]) {
+    padding-bottom: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-pb-lg:not([style*="padding"]) {
+    padding-bottom: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext-pl-0:not([style*="padding"]) {
+    padding-left: 0 !important;
+  }
+
+  .desktop\:ext-pl-base:not([style*="padding"]) {
+    padding-left: var(--wp--style--block-gap, 1.75rem) !important;
+  }
+
+  .desktop\:ext-pl-lg:not([style*="padding"]) {
+    padding-left: var(--extendify--spacing--large, 3rem) !important;
+  }
+
+  .desktop\:ext-text-left {
+    text-align: left !important;
+  }
+
+  .desktop\:ext-text-center {
+    text-align: center !important;
+  }
+
+  .desktop\:ext-text-right {
+    text-align: right !important;
+  }
+}
+
+</style>
+<link rel="stylesheet" id="bbpc-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/bbpc.css" type="text/css" media="all">
+<link rel="stylesheet" id="bbpc-voting-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/bbpc-voting.css" type="text/css" media="all">
+<link rel="stylesheet" id="bbp-default-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/bbpress.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="fts-feeds-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/styles.css" type="text/css" media="">
+<link rel="stylesheet" id="dashicons-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/dashicons.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="post-views-counter-frontend-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/frontend.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="SFSImainCss-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/sfsi-style.css" type="text/css" media="all">
+<link rel="stylesheet" id="woocommerce-layout-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/woocommerce-layout.css" type="text/css" media="all">
+<link rel="stylesheet" id="woocommerce-smallscreen-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/woocommerce-smallscreen.css" type="text/css" media="only screen and (max-width: 768px)">
+<link rel="stylesheet" id="woocommerce-general-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/woocommerce.css" type="text/css" media="all">
+<style id="woocommerce-inline-inline-css" type="text/css">
+.woocommerce form .form-row .required { visibility: visible; }
+</style>
+<link rel="stylesheet" id="eazydocs-blocks-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/blocks.css" type="text/css" media="all">
+<link rel="stylesheet" id="bootstrap4-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="fontawesome-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="mediumish-style-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/style_002.css" type="text/css" media="all">
+<link rel="stylesheet" id="a0d4e2dc8fedffc1f32aef64fdab6532-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/css_003.css" type="text/css" media="all">
+<link rel="stylesheet" id="50a13ad9a4c45e05454875855874ccb7-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/css_002.css" type="text/css" media="all">
+<link rel="stylesheet" id="c8575e414cefc58fef4c19cc29b9a938-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/css.css" type="text/css" media="all">
+<link rel="stylesheet" id="1f3024ccaab2a997012f095d6873946e-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/css_005.css" type="text/css" media="all">
+<link rel="stylesheet" id="f5bc3b56cb236f484d9a38537bb413b1-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/css_004.css" type="text/css" media="all">
+<link rel="stylesheet" id="hcb-style-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/hcb--light.css" type="text/css" media="all">
+<style id="hcb-style-inline-css" type="text/css">
+:root{--hcb-font-size: 14px}:root{--hcb-font-size--mobile: 13px}:root{--hcb-font-family:Menlo, Consolas, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;}
+</style>
+<link rel="stylesheet" id="mediumish_no-kirki-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/style.css" type="text/css" media="all">
+<style id="mediumish_no-kirki-inline-css" type="text/css">
+.btn-simple{background-color:#1C9963;border-color:#1C9963;}.article-post a:not(.wp-block-button__link), .post .btn.follow, .post .post-top-meta .author-description a, article.page a:not(.wp-block-button__link), .alertbar a{color:#1C9963;}.post .btn.follow, .alertbar input[type="submit"]{border-color:#1C9963;}blockquote{border-color:#1C9963;}.entry-content input[type=submit], .alertbar input[type="submit"]{background-color:#1C9963;border-color:#1C9963;}p.sharecolour{color:#999999;}.shareitnow ul li a svg, .shareitnow a{fill:#b3b3b3;}.shareitnow li a{color:#b3b3b3;border-color:#d2d2d2;}#comments a{color:#1C9963;}.comment-form input.submit{background-color:#1C9963;border-color:#1C9963;}footer.footer a{color:#1C9963;}body{font-family:PT Sans;font-weight:400;font-size:15px;line-height:1.5;color:#5f636d;}.h1,.h2,.h3,.h4,.h5,.h6,h1,h2,h3,h4,h5,h6{font-family:PT Sans;font-weight:700;color:#222;}.carousel-excerpt .title{font-family:;font-weight:700;font-size:1.5em;line-height:1.2;color:#ffffff;text-transform:none;letter-spacing:0;}.carousel-excerpt .fontlight{font-family:;font-weight:400;font-size:18px;line-height:1.4;color:#ffffff;letter-spacing:0;}.mediumnavigation .navbar-brand{font-family:DM Serif Display;font-weight:400;font-size:30px;letter-spacing:0;}.navbar .nav-link{font-family:Source Sans Pro;font-size:15px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;}.article-post{font-family:Merriweather;line-height:1.8;color:#222222;font-size:1.2em;}.mainheading h1.posttitle, h1.entry-title{font-family:;line-height:1.1;color:#222222;font-size:3.4em;}.entry-content.page-content{font-family:;line-height:1.7;color:;font-size:1.2em;}.mediumnavigation, .dropdown-menu, .dropdown-item{background-color:rgba(255,255,255,.97);}.mediumnavigation, .mediumnavigation a, .navbar-light .navbar-nav .nav-link{color:#888;}.navbar-light .navbar-brand{color:#111111;}.navbar-light .navbar-brand:hover{color:#02b875;}.customarea .btn.follow{border-color:#02B875;color:#02B875;}.search-form .search-submit{background-color:#02B875;}.search-form .search-field{border-color:#eeeeee;}.search-form .search-submit .fa{color:#ffffff;}.search-form .search-field, .search-form .search-field::placeholder{color:#b2b2b2;}@media (max-width: 767px){.navbar-collapse{background-color:rgba(255,255,255,.97);}}
+</style>
+<link rel="stylesheet" id="claps-applause-css" href="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/claps-applause.css" type="text/css" media="all">
+<script type="text/javascript" id="jquery-core-js-extra">
+/* <![CDATA[ */
+var eazydocs_local_object = {"ajaxurl":"https:\/\/collabnix.com\/wp-admin\/admin-ajax.php","EAZYDOCS_FRONT_CSS":"https:\/\/collabnix.com\/wp-content\/plugins\/eazydocs\/assets\/css\/frontend","nonce":"90fbb100f6","is_doc_ajax":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/jquery.min.js" id="jquery-core-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/jquery-migrate.min.js" id="jquery-migrate-js"></script>
+<script type="text/javascript" id="fts_clear_cache_script-js-extra">
+/* <![CDATA[ */
+var ftsAjax = {"createNewFeedUrl":"https:\/\/collabnix.com\/wp-admin\/edit.php?post_type=fts&page=create-new-feed","ajaxurl":"https:\/\/collabnix.com\/wp-admin\/admin-ajax.php","clearCacheNonce":"3ea09e9e6e"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/admin.js" id="fts_clear_cache_script-js"></script>
+<script type="text/javascript" id="ahc_front_js-js-extra">
+/* <![CDATA[ */
+var ahc_ajax_front = {"ajax_url":"https:\/\/collabnix.com\/wp-admin\/admin-ajax.php","page_id":"18169","page_title":"Getting Started with Docker and PostgreSQL","post_type":"post"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/front.js" id="ahc_front_js-js"></script>
+<script type="text/javascript" id="bbpc-voting-js-extra">
+/* <![CDATA[ */
+var bbp_voting_ajax_object = {"ajax_url":"https:\/\/collabnix.com\/wp-admin\/admin-ajax.php"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/bbpc-voting.js" id="bbpc-voting-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/powered-by.js" id="fts_powered_by_js-js"></script>
+<script type="text/javascript" id="fts-global-js-extra">
+/* <![CDATA[ */
+var fts_twitter_ajax = {"ajax_url":"https:\/\/collabnix.com\/wp-admin\/admin-ajax.php"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/fts-global.js" id="fts-global-js"></script>
+<link rel="https://api.w.org/" href="https://collabnix.com/wp-json/"><link rel="alternate" type="application/json" href="https://collabnix.com/wp-json/wp/v2/posts/18169"><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://collabnix.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://collabnix.com/wp-includes/wlwmanifest.xml">
+<meta name="generator" content="WordPress 6.2">
+<meta name="generator" content="WooCommerce 7.4.0">
+<link rel="canonical" href="https://collabnix.com/getting-started-with-docker-and-postgresql/">
+<link rel="shortlink" href="https://collabnix.com/?p=18169">
+<link rel="alternate" type="application/json+oembed" href="https://collabnix.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcollabnix.com%2Fgetting-started-with-docker-and-postgresql%2F">
+<link rel="alternate" type="text/xml+oembed" href="https://collabnix.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcollabnix.com%2Fgetting-started-with-docker-and-postgresql%2F&amp;format=xml">
+<meta name="generator" content="Redux 4.3.26"><meta name="follow.it-verification-code-ZXdWelo0V1BUNmJ1Wk4vSHlkM0lDajBKZlp3QzBhaytGL0dQQnZ0M2JVdE42aWpWN2lvREdMekJLa1FmRXRGK3FRRi9QdS8renl6T1NIeUFjYWlvdCs1bysxMEZrajlZZ1gxY3IrWWNHNmgzQTNBcnpUZEVUMko4VWx5NCt0L1h8bDJyYUw0NlExZFQrMzdFZEpTQ1ZqMzNEbS96ZWJmTUltTS8zb0E5cEJ0TT0=" content="Dwqr4NmABhKJyFKFJY86"><meta property="og:image:secure_url" content="https://collabnix.com/wp-content/uploads/2023/02/Screenshot-2023-02-14-at-12.07.08-PM.png" data-id="sfsi"><meta property="twitter:card" content="summary_large_image" data-id="sfsi"><meta property="twitter:image" content="https://collabnix.com/wp-content/uploads/2023/02/Screenshot-2023-02-14-at-12.07.08-PM.png" data-id="sfsi"><meta property="og:image:type" content="" data-id="sfsi"><meta property="og:image:width" content="2010" data-id="sfsi"><meta property="og:image:height" content="1210" data-id="sfsi"><meta property="og:url" content="https://collabnix.com/getting-started-with-docker-and-postgresql/" data-id="sfsi"><meta property="og:description" content="
+
+
+
+Join our Discord Server
+
+
+
+
+
+
+PostgreSQL is an open-source relational database management system (RDBMS) that is known for its reliability, robustness, and scalability. It is widely used in enterprise applications and offers features such as data integrity, transactions, and SQL support.
+
+
+
+Why is PostgreSQL so damn popular?
+
+
+
+PostgreSQL is popular for several reasons, including:
+
+
+
+1. Reliability and robustness
+
+
+
+PostgreSQL is known for its reliability and ability to handle large and complex databases with high concurrency.
+
+
+
+2. Open source
+
+
+
+PostgreSQL is free and open source, which makes it accessible to anyone and allows for a large community of contributors and users.
+
+
+
+3. Advanced features
+
+
+
+PostgreSQL offers advanced features such as support for advanced data types, JSON, and full-text search.
+
+
+
+4. Standards compliance
+
+
+
+PostgreSQL is known for its high level of standards compliance, which makes it easy to integrate with other systems and applications.
+
+
+
+5. Extensibility
+
+
+
+PostgreSQL is highly extensible, which means it can be easily customized and extended to meet specific needs and requirements.
+
+
+
+PostgreSQL Docker Image
+
+
+
+The PostgreSQL Docker image is a pre-configured version of PostgreSQL that can be run inside a Docker container. It allows developers and system administrators to quickly set up and run a PostgreSQL instance without having to install it directly on their local machines.
+
+
+
+The official PostgreSQL Docker image is available on the Docker Hub, and it is maintained by the PostgreSQL community. It includes the latest version of PostgreSQL and is available for different operating systems and architectures.
+
+
+
+The PostgreSQL Docker image can be easily customized using environment variables to set up database users, passwords, and other configuration options. It can also be used in conjunction with other Docker images and services to create scalable and highly available database clusters.
+
+
+
+Using the PostgreSQL Docker image can help to simplify the deployment and management of PostgreSQL instances, and it can make it easier to develop, test, and deploy applications that rely on PostgreSQL as their backend database.
+
+
+
+Steps to install PostgreSQL using Docker Desktop
+
+
+
+here are the general steps to install PostgreSQL using Docker Desktop:
+
+
+
+Step 1. Install Docker Desktop
+
+
+
+First, you'll need to download and install Docker Desktop on your machine. You can download Docker Desktop from the Docker website, and installation instructions vary depending on your operating system.
+
+
+
+Step 2. Pull the PostgreSQL image
+
+
+
+Once Docker Desktop is installed, open a terminal or command prompt and run the following command to download the latest PostgreSQL image from Docker Hub:
+
+
+
+docker pull postgres
+
+
+
+
+Step 3. Run a container
+
+
+
+After the image is downloaded, run the following command to start a PostgreSQL container:
+
+
+
+docker run --name my-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+
+
+
+
+This command will start a new PostgreSQL container with the name my-postgres and the password mysecretpassword. The -d option runs the container in detached mode, which means it runs in the background.
+
+
+
+Step 4. Access PostgreSQL
+
+
+
+You can access the PostgreSQL container using the psql command-line utility or a GUI tool like pgAdmin. To access the container using psql, run the following command:
+
+
+
+docker exec -it my-postgres psql -U postgres
+
+
+
+
+This command connects to the running PostgreSQL container and opens the psql shell as the postgres user.
+
+
+
+That's it! You should now have a working PostgreSQL instance running in a Docker container on your machine.
+
+
+
+Setup PostgreSQL Using Customised Dockerfile
+
+
+
+To set up PostgreSQL using a customized Dockerfile, you can follow these general steps:
+
+
+
+Create a Dockerfile: In the root directory of your project, create a file called Dockerfile and add the following content:
+
+
+
+FROM postgres
+ENV POSTGRES_DB mydb
+ENV POSTGRES_USER myuser
+ENV POSTGRES_PASSWORD mysecretpassword
+COPY init.sql /docker-entrypoint-initdb.d/
+
+
+
+
+This file starts from the postgres image and sets some environment variables for the database name, user, and password. It also copies an init.sql file to the /docker-entrypoint-initdb.d/ directory, which will be used to initialize the database.
+
+
+
+Create the init.sql file
+
+
+
+In the same directory as your Dockerfile, create an init.sql file and add any SQL commands you want to execute when the container starts. For example, you could create a table:
+
+
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE
+);
+
+
+
+
+Build the image
+
+
+
+Run the following command in the same directory as your Dockerfile to build the custom image:
+
+
+
+docker build -t my-postgres .
+
+
+
+
+This command builds a new image based on the Dockerfile in the current directory and tags it with the name my-postgres.
+
+
+
+Run the container
+
+
+
+Finally, run the following command to start a new container based on your custom image:
+
+
+
+docker run --name my-postgres -p 5432:5432 -d my-postgres
+
+
+
+
+This command starts a new container with the name my-postgres, maps the container's port 5432 to the host machine's port 5432, and runs the container in detached mode.
+
+
+
+That's it! You should now have a working PostgreSQL instance running in a Docker container based on your custom image. You can connect to the database using a client like psql or any other PostgreSQL client.
+
+
+
+Using Docker Compose
+
+
+
+To use PostgreSQL with Docker Compose, you can define a service for PostgreSQL in your docker-compose.yml file. Here are the general steps to do that:
+
+
+
+Create a docker-compose.yml file: In the root directory of your project, create a file called docker-compose.yml and add the following content:
+
+
+
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+
+
+
+
+This file defines a service called db that uses the postgres image, sets the POSTGRES_PASSWORD environment variable, and specifies that the container should always be restarted if it fails.
+
+
+
+Start the service: To start the PostgreSQL service, run the following command in the same directory as your docker-compose.yml file:
+
+
+
+docker-compose up -d
+
+
+
+
+This command starts the service in the background (-d option) and creates a new container based on the postgres image.
+
+
+
+Access PostgreSQL
+
+
+
+You can access the PostgreSQL container using the psql command-line utility or a GUI tool like pgAdmin. To access the container using psql, run the following command:
+
+
+
+docker-compose exec db psql -U postgres
+
+
+
+
+This command connects to the running PostgreSQL container and opens the psql shell as the postgres user.
+
+
+
+That's it! You should now have a working PostgreSQL instance running in a Docker container managed by Docker Compose. You can also define other services in your docker-compose.yml file and use them to build and run your application.
+
+
+
+High Availability PostgreSQL with Replication using Docker
+
+
+
+Here is an example YAML file for setting up a High Availability PostgreSQL database with replication using Docker Compose:
+
+
+
+version: '3'
+
+services:
+  master:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+    volumes:
+      - ./master/data:/var/lib/postgresql/data
+      - ./master/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5432:5432
+    restart: always
+
+  slave:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_MASTER_HOST: master
+      POSTGRES_MASTER_PORT: 5432
+    volumes:
+      - ./slave/data:/var/lib/postgresql/data
+    restart: always
+
+
+
+
+In this example, we have two services defined: master and slave.
+
+
+
+The master service is the primary database node. It uses the postgres Docker image and sets the environment variables POSTGRES_USER and POSTGRES_PASSWORD to define the superuser account for the database. We also mount a local directory ./master/data to the container's data directory to persist data, and ./master/init.sql file is used to initialize the master database with any initial data.
+
+
+
+The slave service is the replica database node. It also uses the postgres Docker image, and sets the POSTGRES_USER and POSTGRES_PASSWORD environment variables. We also define the POSTGRES_MASTER_HOST and POSTGRES_MASTER_PORT environment variables to point the replica to the primary database. The ./slave/data directory is mounted to the container to persist replica's data.
+
+
+
+With this configuration, the master service listens on the host's port 5432 and replication is automatically set up for the slave service to follow the master.
+" data-id="sfsi"><meta property="og:title" content="Getting Started with Docker and PostgreSQL" data-id="sfsi"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"></head><body class="post-template-default single single-post postid-18169 single-format-standard wp-custom-logo wp-embed-responsive theme-mediumish sfsi_actvite_theme_default woocommerce-js ezd-body-docs elementor-default elementor-kit-7716 fts-powered-by-text-popup sfsi_2.77" data-rsssl="1"><div style="text-align:center;">
+  <a href="https://discord.gg/QEkCXAXYSe" target="_blank" style="background-color:#7289DA;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">Join our Discord Server</a>
+</div>
+
+	<noscript><style>.woocommerce-product-gallery{ opacity: 1 !important; }</style></noscript>
+	<meta name="generator" content="Elementor 3.11.2; settings: css_print_method-internal, google_font-enabled, font_display-auto">
+<script> (function(ss,ex){ window.ldfdr=window.ldfdr||function(){(ldfdr._q=ldfdr._q||[]).push([].slice.call(arguments));}; (function(d,s){ fs=d.getElementsByTagName(s)[0]; function ce(src){ var cs=d.createElement(s); cs.src=src; cs.async=1; fs.parentNode.insertBefore(cs,fs); }; ce('https://sc.lfeeder.com/lftracker_v1_'+ss+(ex?'_'+ex:'')+'.js'); })(document,'script'); })('DzLR5a5oNZA7BoQ2'); </script><style type="text/css">:root{--ezd_brand_color:#000000;}body.single-docs{background-color:#ffffff;}.ezd_search_banner.has_bg_dark.has_cs_bg{background-color:#1e73be;}</style><link rel="icon" href="https://collabnix.com/wp-content/uploads/2020/09/cropped-cropped-cropped-cropped-collabnix_logo-1-3-32x32.png" sizes="32x32">
+<link rel="icon" href="https://collabnix.com/wp-content/uploads/2020/09/cropped-cropped-cropped-cropped-collabnix_logo-1-3-192x192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://collabnix.com/wp-content/uploads/2020/09/cropped-cropped-cropped-cropped-collabnix_logo-1-3-180x180.png">
+<meta name="msapplication-TileImage" content="https://collabnix.com/wp-content/uploads/2020/09/cropped-cropped-cropped-cropped-collabnix_logo-1-3-270x270.png">
+		<style type="text/css" id="wp-custom-css">
+			
+body {
+    font-size: 15px;
+	
+}		</style>
+		 
+    
+
+ 
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none" style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;"><defs><filter id="wp-duotone-dark-grayscale"><feColorMatrix color-interpolation-filters="sRGB" type="matrix" values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 "></feColorMatrix><feComponentTransfer color-interpolation-filters="sRGB"><feFuncR type="table" tableValues="0 0.49803921568627"></feFuncR><feFuncG type="table" tableValues="0 0.49803921568627"></feFuncG><feFuncB type="table" tableValues="0 0.49803921568627"></feFuncB><feFuncA type="table" tableValues="1 1"></feFuncA></feComponentTransfer><feComposite in2="SourceGraphic" operator="in"></feComposite></filter></defs></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none" style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;"><defs><filter id="wp-duotone-grayscale"><feColorMatrix color-interpolation-filters="sRGB" type="matrix" values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 "></feColorMatrix><feComponentTransfer color-interpolation-filters="sRGB"><feFuncR type="table" tableValues="0 1"></feFuncR><feFuncG type="table" tableValues="0 1"></feFuncG><feFuncB type="table" tableValues="0 1"></feFuncB><feFuncA type="table" tableValues="1 1"></feFuncA></feComponentTransfer><feComposite in2="SourceGraphic" operator="in"></feComposite></filter></defs></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none" style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;"><defs><filter id="wp-duotone-purple-yellow"><feColorMatrix color-interpolation-filters="sRGB" type="matrix" values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 "></feColorMatrix><feComponentTransfer color-interpolation-filters="sRGB"><feFuncR type="table" tableValues="0.54901960784314 0.98823529411765"></feFuncR><feFuncG type="table" tableValues="0 1"></feFuncG><feFuncB type="table" tableValues="0.71764705882353 0.25490196078431"></feFuncB><feFuncA type="table" tableValues="1 1"></feFuncA></feComponentTransfer><feComposite in2="SourceGraphic" operator="in"></feComposite></filter></defs></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none" style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;"><defs><filter id="wp-duotone-blue-red"><feColorMatrix color-interpolation-filters="sRGB" type="matrix" values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 "></feColorMatrix><feComponentTransfer color-interpolation-filters="sRGB"><feFuncR type="table" tableValues="0 1"></feFuncR><feFuncG type="table" tableValues="0 0.27843137254902"></feFuncG><feFuncB type="table" tableValues="0.5921568627451 0.27843137254902"></feFuncB><feFuncA type="table" tableValues="1 1"></feFuncA></feComponentTransfer><feComposite in2="SourceGraphic" operator="in"></feComposite></filter></defs></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none" style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;"><defs><filter id="wp-duotone-midnight"><feColorMatrix color-interpolation-filters="sRGB" type="matrix" values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 "></feColorMatrix><feComponentTransfer color-interpolation-filters="sRGB"><feFuncR type="table" tableValues="0 0"></feFuncR><feFuncG type="table" tableValues="0 0.64705882352941"></feFuncG><feFuncB type="table" tableValues="0 1"></feFuncB><feFuncA type="table" tableValues="1 1"></feFuncA></feComponentTransfer><feComposite in2="SourceGraphic" operator="in"></feComposite></filter></defs></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none" style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;"><defs><filter id="wp-duotone-magenta-yellow"><feColorMatrix color-interpolation-filters="sRGB" type="matrix" values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 "></feColorMatrix><feComponentTransfer color-interpolation-filters="sRGB"><feFuncR type="table" tableValues="0.78039215686275 1"></feFuncR><feFuncG type="table" tableValues="0 0.94901960784314"></feFuncG><feFuncB type="table" tableValues="0.35294117647059 0.47058823529412"></feFuncB><feFuncA type="table" tableValues="1 1"></feFuncA></feComponentTransfer><feComposite in2="SourceGraphic" operator="in"></feComposite></filter></defs></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none" style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;"><defs><filter id="wp-duotone-purple-green"><feColorMatrix color-interpolation-filters="sRGB" type="matrix" values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 "></feColorMatrix><feComponentTransfer color-interpolation-filters="sRGB"><feFuncR type="table" tableValues="0.65098039215686 0.40392156862745"></feFuncR><feFuncG type="table" tableValues="0 1"></feFuncG><feFuncB type="table" tableValues="0.44705882352941 0.4"></feFuncB><feFuncA type="table" tableValues="1 1"></feFuncA></feComponentTransfer><feComposite in2="SourceGraphic" operator="in"></feComposite></filter></defs></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none" style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;"><defs><filter id="wp-duotone-blue-orange"><feColorMatrix color-interpolation-filters="sRGB" type="matrix" values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 "></feColorMatrix><feComponentTransfer color-interpolation-filters="sRGB"><feFuncR type="table" tableValues="0.098039215686275 1"></feFuncR><feFuncG type="table" tableValues="0 0.66274509803922"></feFuncG><feFuncB type="table" tableValues="0.84705882352941 0.41960784313725"></feFuncB><feFuncA type="table" tableValues="1 1"></feFuncA></feComponentTransfer><feComposite in2="SourceGraphic" operator="in"></feComposite></filter></defs></svg>        
+<style>
+    </style>
+
+        
+<header class="navbar-light bg-white fixed-top mediumnavigation nav-up" style="top: -53px;">
+
+    <div class="container">
+
+        <!-- Begin Logo --> 
+        <div class="row justify-content-center align-items-center brandrow">
+            
+            <div class="col-lg-4 col-md-4 col-xs-12 hidden-xs-down customarea">
+
+                            <a class="btn follow" href="https://twitter.com/ajeetraina" target="blank"><i class="fa fa-twitter"></i> Follow</a>
+            
+
+                            <a target="_blank" href="https://www.youtube.com/c/Collabnix"> <i class="fa fa-youtube social"></i></a>
+                            <a target="_blank" href="https://github.com/collabnix"> <i class="fa fa-github social"></i></a>
+                            <a target="_blank" href="https://launchpass.com/collabnix"> <i class="fa fa-slack social"></i></a>
+            
+            </div>
+
+            <div class="col-lg-4 col-md-4  col-xs-12 text-center logoarea">
+                                     <a class="navbar-brand" href="https://collabnix.com/">Collabnix</a>
+                            </div>
+
+            <div class="col-lg-4 col-md-4 mr-auto col-xs-12 text-right searcharea">
+                                        
+                        <form role="search" method="get" class="search-form" action="https://collabnix.com/">
+<input type="hidden" name="post_type" value="post">
+<input type="search" class="search-field" placeholder="Search..." name="s" title="Search for:">
+<button type="submit" class="search-submit">
+<i class="fa fa-search"></i>   
+</button>
+</form>                        
+                            </div>
+                    
+        </div>
+        <!-- End Logo --> 
+
+        <div class="navarea">
+       
+        <nav class="navbar navbar-toggleable-sm">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#bs4navbar" aria-controls="bs4navbar" aria-expanded="false" aria-label="Toggle navigation"> 
+                <span class="navbar-toggler-icon"></span> 
+            </button>  
+                <div id="bs4navbar" class="collapse navbar-collapse"><ul id="menu-primary-old" class="navbar-nav col-md-12 justify-content-center"><li id="menu-item-7584" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-7584 nav-item"><a href="https://collabnix.com/" class="nav-link">Home</a></li><li id="menu-item-18314" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-18314 nav-item"><a href="https://collabnix.com/docs/" class="nav-link">Docs</a></li><li id="menu-item-9144" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-9144 nav-item dropdown"><a href="https://www.youtube.com/c/Collabnix" class="nav-link dropdown-toggle">Events</a>
+<div class="dropdown-menu">
+<a href="https://www.youtube.com/watch?v=Tlce19gYY9Q" class="dropdown-item">OSCONF 2022</a><a href="https://www.youtube.com/playlist?list=PLTUnKbSYLzw2VOPZRiPFJK1u0tw442lKS" class="dropdown-item">OSCONF 2021</a><a href="https://www.youtube.com/c/Collabnix/playlists" class="dropdown-item">OSCONF 2020</a></div>
+</li><li id="menu-item-9203" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-9203 nav-item dropdown"><a href="https://community.collabnix.com/" class="nav-link dropdown-toggle">Cheatsheets</a>
+<div class="dropdown-menu">
+<a href="https://collabnix.com/docker-cheatsheet/" class="dropdown-item">Docker</a><a href="https://collabnix.com/kubectl-cheatsheet/" class="dropdown-item">Kubectl</a><a href="https://collabnix.com/terraform/" class="dropdown-item">Terraform</a><a href="https://collabnix.com/chatgpt-cheat-sheet/" class="dropdown-item">ChatGPT Cheat Sheet</a><a href="https://collabnix.com/ansible-cheatsheet/" class="dropdown-item">Ansible Cheatsheet</a></div>
+</li><li id="menu-item-9176" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-9176 nav-item dropdown"><a href="https://dockerlabs.collabnix.com/" class="nav-link dropdown-toggle">Labs</a>
+<div class="dropdown-menu">
+<a href="https://kubelabs.collabnix.com/" class="dropdown-item">KubeLabs</a><a href="https://dockerlabs.collabnix.com/" class="dropdown-item">DockerLabs</a><a href="https://terraform.collabnix.com/" class="dropdown-item">Terraform Labs</a><a href="https://github.com/collabnix/ioetplanet/blob/master/docs/raspberrypi/getting-started.md" class="dropdown-item">Raspberry Pi</a><a href="https://github.com/collabnix/ioetplanet/blob/master/docs/nvidia/getting-started.md" class="dropdown-item">Jetson Nano</a><a href="https://github.com/collabnix/ioetplanet/blob/master/docs/nvidia/jetson-xavier.md" class="dropdown-item">Jetson AGX Xavier</a></div>
+</li><li id="menu-item-9181" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-9181 nav-item dropdown"><a href="https://github.com/collabnix" class="nav-link dropdown-toggle">Tools</a>
+<div class="dropdown-menu">
+<a href="https://github.com/collabnix/wasm-docker-better-together" class="dropdown-item">Wasm</a><a href="https://dockertools.collabnix.com/" class="dropdown-item">Docker</a><a href="https://github.com/collabnix/docker-community-extensions" class="dropdown-item">Docker Extensions</a><a href="https://kubetools.collabnix.com/" class="dropdown-item">Kubernetes</a></div>
+</li><li id="menu-item-9140" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-9140 nav-item dropdown"><a href="https://launchpass.com/collabnix" class="nav-link dropdown-toggle">Chat</a>
+<div class="dropdown-menu">
+<a href="https://launchpass.com/collabnix" class="dropdown-item">Slack</a><a href="https://discord.gg/ztZpXzjSmF" class="dropdown-item">Discord</a></div>
+</li><li id="menu-item-18066" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-18066 nav-item"><a href="https://collabnix.com/write-for-us/" class="nav-link">Write for Us!</a></li></ul></div>        </nav>
+        
+        </div>
+            
+    </div>
+
+</header>
+        
+       
+        <!-- Begin site-content
+		================================================== -->         
+        <div class="site-content" style="margin-top: 106.5px;">
+
+<div class="container"> 
+    <div class="row">         
+        <div class=" col-md-2 ">           
+            <div class="share">
+                
+                <div class="sidebarapplause">
+                
+                        <div id="pt-claps-applause-18169" class="pt-claps-applause">
+                            <a class="claps-button" href="https://collabnix.com/getting-started-with-docker-and-postgresql/" data-id="18169"></a>
+                            <span id="claps-count-18169" class="claps-count">3</span><input type="hidden" id="_wpnonce" name="_wpnonce" value="22f8cb67f6"><input type="hidden" name="_wp_http_referer" value="/getting-started-with-docker-and-postgresql/"></div>                </div>
+                
+                				<p class="sharecolour">
+					Share				</p>
+                
+<ul class="shareitnow"><li>
+        <a target="_blank" href="https://twitter.com/intent/tweet?text=Getting%20Started%20with%20Docker%20and%20PostgreSQL&amp;url=https%3A%2F%2Fcollabnix.com%2Fgetting-started-with-docker-and-postgresql%2F">
+        <i class="fa fa-twitter"></i>
+        </a>
+    </li><li>
+        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcollabnix.com%2Fgetting-started-with-docker-and-postgresql%2F">        
+        <i class="fa fa-facebook"></i>
+        </a>
+    </li><li>
+        <a target="_blank" href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fcollabnix.com%2Fgetting-started-with-docker-and-postgresql%2F&amp;media=https://collabnix.com/wp-content/uploads/2023/02/Screenshot-2023-02-14-at-12.07.08-PM.png&amp;description=Getting%20Started%20with%20Docker%20and%20PostgreSQL">
+        <i class="fa fa-pinterest"></i>
+        </a>
+    </li><li>
+        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fcollabnix.com%2Fgetting-started-with-docker-and-postgresql%2F&amp;title=Getting%20Started%20with%20Docker%20and%20PostgreSQL">
+        <i class="fa fa-linkedin"></i>
+        </a>
+    </li></ul>                		        
+                
+                            </div>			                                
+        </div>
+        
+                                    <div class="col-md-8 flex-first flex-md-unordered post-18169 post type-post status-publish format-standard has-post-thumbnail hentry category-docker tag-docker tag-postgresql" id="post-18169"> 
+                    <div class="mainheading">
+                       
+                                                <!-- Begin Author box -->                                     
+                        <div class="row post-top-meta hidden-md-down"> 
+                            <div class="col-md-2 col-xs-12"> 
+                                <a href="https://collabnix.com/author/ajeetraina/">
+                                    <img alt="" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/949c8898e697e242e233922581567fc4.jpeg" srcset="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/949c8898e697e242e233922581567fc4_005.jpeg 2x" class="avatar avatar-72 photo imgavt" loading="lazy" decoding="async" width="72" height="72">                                </a>
+                            </div>                                         
+                            <div class="col-md-10 col-xs-12"> 
+                                <a class="text-capitalize link-dark" href="https://collabnix.com/author/ajeetraina/">
+                                Ajeet Raina <span class="btn follow">Follow</span></a>
+                                <span class="author-description d-block">Docker Captain, ARM Innovator &amp; Docker Bangalore Community Leader.</span> 
+                            </div>                                         
+                        </div>
+                                                 
+                                                
+                        <h1 class="posttitle">Getting Started with Docker and PostgreSQL</h1>
+                        <p>
+                                                        <span class="post-date"><time class="post-date">
+                            14th February 2023                            </time></span>
+                                                        
+                                                        <span class="dot"></span>
+                            <span class="readingtime">4 min read</span>
+                                                    </p> 
+                    </div>
+                    
+                  <img src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/Screenshot-2023-02-14-at-12.07.08-PM.png" class="featured-image img-fluid wp-post-image" alt="" decoding="async" srcset="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/Screenshot-2023-02-14-at-12.07.08-PM.png 2010w, Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/Screenshot-2023-02-14-at-12.07.08-PM-600x361.png 600w" sizes="(max-width: 2010px) 100vw, 2010px" width="2010" height="1210">                    <article class="article-post">
+                                                
+
+
+<div class="wp-block-buttons is-layout-flex">
+<div class="wp-block-button aligncenter is-style-fill"><a class="wp-block-button__link has-vivid-cyan-blue-background-color has-background wp-element-button" href="https://discord.gg/QEkCXAXYSe">Join our Discord Server</a></div>
+</div>
+
+
+
+
+
+<p>PostgreSQL is an open-source relational database management system 
+(RDBMS) that is known for its reliability, robustness, and scalability. 
+It is widely used in enterprise applications and offers features such as
+ data integrity, transactions, and SQL support.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#why-postgresql-is-damn-popular"></a>Why is PostgreSQL so damn popular?</h2>
+
+
+
+<p>PostgreSQL is popular for several reasons, including:</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#1-reliability-and-robustness"></a>1. Reliability and robustness</h2>
+
+
+
+<p>PostgreSQL is known for its reliability and ability to handle large and complex databases with high concurrency.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#2-open-source"></a>2. Open source</h2>
+
+
+
+<p>PostgreSQL is free and open source, which makes it accessible to 
+anyone and allows for a large community of contributors and users.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#3-advanced-features"></a>3. Advanced features</h2>
+
+
+
+<p>PostgreSQL offers advanced features such as support for advanced data types, JSON, and full-text search.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#4-standards-compliance"></a>4. Standards compliance</h2>
+
+
+
+<p>PostgreSQL is known for its high level of standards compliance, which
+ makes it easy to integrate with other systems and applications.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#5-extensibility"></a>5. Extensibility</h2>
+
+
+
+<p>PostgreSQL is highly extensible, which means it can be easily customized and extended to meet specific needs and requirements.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#postgresql-docker-image"></a>PostgreSQL Docker Image</h2>
+
+
+
+<p>The PostgreSQL Docker image is a pre-configured version of PostgreSQL
+ that can be run inside a Docker container. It allows developers and 
+system administrators to quickly set up and run a PostgreSQL instance 
+without having to install it directly on their local machines.</p>
+
+
+
+<p>The official PostgreSQL Docker image is available on the Docker Hub, 
+and it is maintained by the PostgreSQL community. It includes the latest
+ version of PostgreSQL and is available for different operating systems 
+and architectures.</p>
+
+
+
+<p>The PostgreSQL Docker image can be easily customized using 
+environment variables to set up database users, passwords, and other 
+configuration options. It can also be used in conjunction with other 
+Docker images and services to create scalable and highly available 
+database clusters.</p>
+
+
+
+<p>Using the PostgreSQL Docker image can help to simplify the deployment
+ and management of PostgreSQL instances, and it can make it easier to 
+develop, test, and deploy applications that rely on PostgreSQL as their 
+backend database.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#steps-to-install-postgresql-using-docker-desktop"></a>Steps to install PostgreSQL using Docker Desktop</h2>
+
+
+
+<p>here are the general steps to install PostgreSQL using Docker Desktop:</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#step-1-install-docker-desktop"></a>Step 1. Install Docker Desktop</h2>
+
+
+
+<p>First, you’ll need to download and install Docker Desktop on your 
+machine. You can download Docker Desktop from the Docker website, and 
+installation instructions vary depending on your operating system.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#step-2-pull-the-postgresql-image"></a>Step 2. Pull the PostgreSQL image</h2>
+
+
+
+<p>Once Docker Desktop is installed, open a terminal or command prompt 
+and run the following command to download the latest PostgreSQL image 
+from Docker Hub:</p>
+
+
+
+<pre class="wp-block-code"><code>docker pull postgres
+</code></pre>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#step-3-run-a-container"></a>Step 3. Run a container</h2>
+
+
+
+<p>After the image is downloaded, run the following command to start a PostgreSQL container:</p>
+
+
+
+<pre class="wp-block-code"><code>docker run --name my-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+</code></pre>
+
+
+
+<p>This command will start a new PostgreSQL container with the name 
+my-postgres and the password mysecretpassword. The -d option runs the 
+container in detached mode, which means it runs in the background.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#step-4-access-postgresql"></a>Step 4. Access PostgreSQL</h2>
+
+
+
+<p>You can access the PostgreSQL container using the psql command-line 
+utility or a GUI tool like pgAdmin. To access the container using psql, 
+run the following command:</p>
+
+
+
+<pre class="wp-block-code"><code>docker exec -it my-postgres psql -U postgres
+</code></pre>
+
+
+
+<p>This command connects to the running PostgreSQL container and opens the psql shell as the postgres user.</p>
+
+
+
+<p>That’s it! You should now have a working PostgreSQL instance running in a Docker container on your machine.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#setup-postgresql-using-customised-dockerfile"></a>Setup PostgreSQL Using Customised Dockerfile</h2>
+
+
+
+<p>To set up PostgreSQL using a customized Dockerfile, you can follow these general steps:</p>
+
+
+
+<p>Create a Dockerfile: In the root directory of your project, create a file called Dockerfile and add the following content:</p>
+
+
+
+<pre class="wp-block-code"><code>FROM postgres
+ENV POSTGRES_DB mydb
+ENV POSTGRES_USER myuser
+ENV POSTGRES_PASSWORD mysecretpassword
+COPY init.sql /docker-entrypoint-initdb.d/
+</code></pre>
+
+
+
+<p>This file starts from the postgres image and sets some environment 
+variables for the database name, user, and password. It also copies an 
+init.sql file to the /docker-entrypoint-initdb.d/ directory, which will 
+be used to initialize the database.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#create-the-initsql-file"></a>Create the init.sql file</h2>
+
+
+
+<p>In the same directory as your Dockerfile, create an init.sql file and
+ add any SQL commands you want to execute when the container starts. For
+ example, you could create a table:</p>
+
+
+
+<pre class="wp-block-code"><code>CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE
+);
+</code></pre>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#build-the-image"></a>Build the image</h2>
+
+
+
+<p>Run the following command in the same directory as your Dockerfile to build the custom image:</p>
+
+
+
+<pre class="wp-block-code"><code>docker build -t my-postgres .
+</code></pre>
+
+
+
+<p>This command builds a new image based on the Dockerfile in the current directory and tags it with the name my-postgres.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#run-the-container"></a>Run the container</h2>
+
+
+
+<p>Finally, run the following command to start a new container based on your custom image:</p>
+
+
+
+<pre class="wp-block-code"><code>docker run --name my-postgres -p 5432:5432 -d my-postgres
+</code></pre>
+
+
+
+<p>This command starts a new container with the name my-postgres, maps 
+the container’s port 5432 to the host machine’s port 5432, and runs the 
+container in detached mode.</p>
+
+
+
+<p>That’s it! You should now have a working PostgreSQL instance running 
+in a Docker container based on your custom image. You can connect to the
+ database using a client like psql or any other PostgreSQL client.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#using-docker-compose"></a>Using Docker Compose</h2>
+
+
+
+<p>To use PostgreSQL with Docker Compose, you can define a service for 
+PostgreSQL in your docker-compose.yml file. Here are the general steps 
+to do that:</p>
+
+
+
+<p>Create a docker-compose.yml file: In the root directory of your 
+project, create a file called docker-compose.yml and add the following 
+content:</p>
+
+
+
+<pre class="wp-block-code"><code>version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+</code></pre>
+
+
+
+<p>This file defines a service called db that uses the postgres image, 
+sets the POSTGRES_PASSWORD environment variable, and specifies that the 
+container should always be restarted if it fails.</p>
+
+
+
+<p>Start the service: To start the PostgreSQL service, run the following
+ command in the same directory as your docker-compose.yml file:</p>
+
+
+
+<pre class="wp-block-code"><code>docker-compose up -d
+</code></pre>
+
+
+
+<p>This command starts the service in the background (-d option) and creates a new container based on the postgres image.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#access-postgresql"></a>Access PostgreSQL</h2>
+
+
+
+<p>You can access the PostgreSQL container using the psql command-line 
+utility or a GUI tool like pgAdmin. To access the container using psql, 
+run the following command:</p>
+
+
+
+<pre class="wp-block-code"><code>docker-compose exec db psql -U postgres
+</code></pre>
+
+
+
+<p>This command connects to the running PostgreSQL container and opens the psql shell as the postgres user.</p>
+
+
+
+<p>That’s it! You should now have a working PostgreSQL instance running 
+in a Docker container managed by Docker Compose. You can also define 
+other services in your docker-compose.yml file and use them to build and
+ run your application.</p>
+
+
+
+<h2 class="wp-block-heading"><a href="https://dev.to/ajeetraina/getting-started-with-docker-and-postgresql-5gb9-temp-slug-1668023?preview=52281ea3dfd3f241ddb7ea46142c4f9eaca2cc55196bc5c0382fdcc873c467560ad0b035eb6ea1eba9c3d0fb6cbbb92358b26ac6fe646c567f71bef6#high-availability-postgresql-with-replication-using-docker"></a>High Availability PostgreSQL with Replication using Docker</h2>
+
+
+
+<p>Here is an example YAML file for setting up a High Availability PostgreSQL database with replication using Docker Compose:</p>
+
+
+
+<pre class="wp-block-code"><code>version: '3'
+
+services:
+  master:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+    volumes:
+      - ./master/data:/var/lib/postgresql/data
+      - ./master/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    restart: always
+
+  slave:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_MASTER_HOST: master
+      POSTGRES_MASTER_PORT: 5432
+    volumes:
+      - ./slave/data:/var/lib/postgresql/data
+    restart: always
+</code></pre>
+
+
+
+<p>In this example, we have two services defined: master and slave.</p>
+
+
+
+<p>The master service is the primary database node. It uses the postgres
+ Docker image and sets the environment variables POSTGRES_USER and 
+POSTGRES_PASSWORD to define the superuser account for the database. We 
+also mount a local directory ./master/data to the container’s data 
+directory to persist data, and ./master/init.sql file is used to 
+initialize the master database with any initial data.</p>
+
+
+
+<p>The slave service is the replica database node. It also uses the 
+postgres Docker image, and sets the POSTGRES_USER and POSTGRES_PASSWORD 
+environment variables. We also define the POSTGRES_MASTER_HOST and 
+POSTGRES_MASTER_PORT environment variables to point the replica to the 
+primary database. The ./slave/data directory is mounted to the container
+ to persist replica’s data.</p>
+
+
+
+<p>With this configuration, the master service listens on the host’s 
+port 5432 and replication is automatically set up for the slave service 
+to follow the master.</p>
+<div class="sfsi_Sicons sfsi_Sicons_position_left" style="width: 100%; display: inline-block; vertical-align: middle; text-align:left"><div style="margin:0px 8px 0px 0px; line-height: 24px"><span>Please follow and like us:</span></div><div class="sfsi_socialwpr"><div class="sf_fb_share sf_icon" style="text-align:left;vertical-align: middle;"><a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=https://collabnix.com/getting-started-with-docker-and-postgresql/" style="display:inline-block;"><img class="sfsi_wicon" data-pin-nopin="true" alt="fb-share-icon" title="Facebook Share" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/en_US.svg"></a></div><div class="sf_twiter sf_icon" style="display: inline-block;vertical-align: middle;width: auto;margin-left: 7px;">
+						<a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=Getting+Started+with+Docker+and+PostgreSQL+https://collabnix.com/getting-started-with-docker-and-postgresql/" style="display:inline-block">
+							<img data-pin-nopin="true" class="sfsi_wicon" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/en_US_Tweet.svg" alt="Tweet" title="Tweet">
+						</a>
+					</div></div></div><div class="post-views content-post post-18169 entry-meta">
+				<span class="post-views-icon dashicons dashicons-chart-bar"></span> <span class="post-views-label">Views</span> <span class="post-views-count">2,463</span>
+			</div> 
+                        <div class="clearfix mb-0"></div>                       
+                    </article>
+                   
+                    <div class="wtnbottomadarticle"><p>Have Queries? Join https://launchpass.com/collabnix</p></div>                    <div class="clearfix"></div>
+                            
+                                             <!-- Begin Author box -->                                     
+                        <div class="row post-top-meta hidden-lg-up"> 
+                            <div class="col-md-2 col-xs-4"> 
+                                <img alt="" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/949c8898e697e242e233922581567fc4_006.jpeg" srcset="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/949c8898e697e242e233922581567fc4_004.jpeg 2x" class="avatar avatar-72 photo" loading="lazy" decoding="async" width="72" height="72">                            </div>                                         
+                            <div class="col-md-10 col-xs-8"> 
+                                <a class="text-capitalize link-dark" href="https://collabnix.com/author/ajeetraina/">
+                                Ajeet Raina <span class="btn follow">Follow</span></a>
+                                <span class="author-description d-block">Docker Captain, ARM Innovator &amp; Docker Bangalore Community Leader.</span> 
+                            </div>                                         
+                        </div>
+                                         
+                    <div class="after-post-tags">
+                                                    <ul class="post-categories">
+	<li><a href="https://collabnix.com/category/docker/" rel="category tag">Docker</a></li></ul>                                                                            <ul class="post-categories aretags">
+                            <li><a href="https://collabnix.com/tag/docker/">#Docker</a></li> <li><a href="https://collabnix.com/tag/postgresql/">#PostgreSQL</a></li>                             </ul>
+                                            </div>
+                    
+                  
+                    <div class="row mb-5 prevnextlinks justify-content-center align-items-center"> 
+                       <div class="col-md-6 col-xs-12 rightborder pl-0"><div class="thepostlink">« <a href="https://collabnix.com/top-10-security-practices-for-enhancing-devops-security/" rel="prev"><strong>Top 10 Security Practices for Enhancing DevOps Security&nbsp;</strong></a></div></div>
+                       <div class="col-md-6 col-xs-12 text-right pr-0"><div class="thepostlink"><a href="https://collabnix.com/how-to-find-investors-for-a-college-itstartup/" rel="next">How to find investors for a college IT<br>startup?</a> »</div></div>
+                    </div>
+                    
+                </div>
+        
+                    
+         
+        
+        
+    </div>                 
+</div>             
+          
+<div class="hideshare"></div>
+
+    <div class="graybg"> 
+        <div class="container"> 
+                <div class="row justify-content-center listrecent listrelated">      
+                <div class="col-lg-4 col-md-4 col-sm-4"> 
+            
+<div class="card post height262"> 
+<a class="thumbimage" href="https://collabnix.com/kubernetes-crud-operation-using-go-on-docker-desktop/" style="background-image:url(https://collabnix.com/wp-content/uploads/2023/05/Screenshot-2023-05-06-at-6.43.10-PM-1.png);"></a><div class="card-block d-flex flex-column">
+    <h2 class="card-title">
+        <a href="https://collabnix.com/kubernetes-crud-operation-using-go-on-docker-desktop/">Kubernetes CRUD Operation using Go on Docker Desktop</a>
+    </h2>
+            <div class="metafooter mt-auto">                        
+            <div class="wrapfooter"> 
+                <span class="meta-footer-thumb"> 
+                    <a href="https://collabnix.com/author/ajeetraina/">
+                    <img alt="" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/949c8898e697e242e233922581567fc4_002.jpeg" srcset="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/949c8898e697e242e233922581567fc4_003.jpeg 2x" class="avatar avatar-40 photo author-thumb" loading="lazy" decoding="async" width="40" height="40">                    </a>
+                </span>                                
+                <span class="author-meta"> 
+                    <span class="post-name">
+                    <a href="https://collabnix.com/author/ajeetraina/">Ajeet Raina</a></span><br> 
+                    <span class="post-date">May 6, 2023</span>
+                    <span class="dot"></span>
+                    <span class="readingtime">5 min read</span> 
+                </span> 
+                <span class="post-read-more">
+                    <a href="https://collabnix.com/kubernetes-crud-operation-using-go-on-docker-desktop/" title="">
+                    <svg class="svgIcon-use" width="25" height="25" viewBox="0 0 25 25">
+                        <path d="M19 6c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v14.66h.012c.01.103.045.204.12.285a.5.5 0 0 0 .706.03L12.5 16.85l5.662 4.126a.508.508 0 0 0 .708-.03.5.5 0 0 0 .118-.285H19V6zm-6.838 9.97L7 19.636V6c0-.55.45-1 1-1h9c.55 0 1 .45 1 1v13.637l-5.162-3.668a.49.49 0 0 0-.676 0z" fill-rule="evenodd"></path>
+                    </svg>
+                    </a>
+                </span>            </div>                        
+        </div>
+    </div>
+</div>
+                                     
+        </div>
+                <div class="col-lg-4 col-md-4 col-sm-4"> 
+            
+<div class="card post height262"> 
+<a class="thumbimage" href="https://collabnix.com/5-minutes-to-strapi-a-headless-content-management-system/" style="background-image:url(https://collabnix.com/wp-content/uploads/2023/05/strapi.jpg);"></a><div class="card-block d-flex flex-column">
+    <h2 class="card-title">
+        <a href="https://collabnix.com/5-minutes-to-strapi-a-headless-content-management-system/">5 Minutes to Strapi – A Headless Content Management…</a>
+    </h2>
+            <div class="metafooter mt-auto">                        
+            <div class="wrapfooter"> 
+                <span class="meta-footer-thumb"> 
+                    <a href="https://collabnix.com/author/ajeetraina/">
+                    <img alt="" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/949c8898e697e242e233922581567fc4_002.jpeg" srcset="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/949c8898e697e242e233922581567fc4_003.jpeg 2x" class="avatar avatar-40 photo author-thumb" loading="lazy" decoding="async" width="40" height="40">                    </a>
+                </span>                                
+                <span class="author-meta"> 
+                    <span class="post-name">
+                    <a href="https://collabnix.com/author/ajeetraina/">Ajeet Raina</a></span><br> 
+                    <span class="post-date">May 5, 2023</span>
+                    <span class="dot"></span>
+                    <span class="readingtime">6 min read</span> 
+                </span> 
+                <span class="post-read-more">
+                    <a href="https://collabnix.com/5-minutes-to-strapi-a-headless-content-management-system/" title="">
+                    <svg class="svgIcon-use" width="25" height="25" viewBox="0 0 25 25">
+                        <path d="M19 6c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v14.66h.012c.01.103.045.204.12.285a.5.5 0 0 0 .706.03L12.5 16.85l5.662 4.126a.508.508 0 0 0 .708-.03.5.5 0 0 0 .118-.285H19V6zm-6.838 9.97L7 19.636V6c0-.55.45-1 1-1h9c.55 0 1 .45 1 1v13.637l-5.162-3.668a.49.49 0 0 0-.676 0z" fill-rule="evenodd"></path>
+                    </svg>
+                    </a>
+                </span>            </div>                        
+        </div>
+    </div>
+</div>
+                                     
+        </div>
+                <div class="col-lg-4 col-md-4 col-sm-4"> 
+            
+<div class="card post height262"> 
+<a class="thumbimage" href="https://collabnix.com/performing-kubernetes-crud-operation-programmatically-using-python-on-docker-desktop/" style="background-image:url(https://collabnix.com/wp-content/uploads/2023/04/Screenshot-2023-04-29-at-10.51.03-AM.png);"></a><div class="card-block d-flex flex-column">
+    <h2 class="card-title">
+        <a href="https://collabnix.com/performing-kubernetes-crud-operation-programmatically-using-python-on-docker-desktop/">Kubernetes for Python Developers</a>
+    </h2>
+            <div class="metafooter mt-auto">                        
+            <div class="wrapfooter"> 
+                <span class="meta-footer-thumb"> 
+                    <a href="https://collabnix.com/author/ajeetraina/">
+                    <img alt="" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/949c8898e697e242e233922581567fc4_002.jpeg" srcset="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/949c8898e697e242e233922581567fc4_003.jpeg 2x" class="avatar avatar-40 photo author-thumb" loading="lazy" decoding="async" width="40" height="40">                    </a>
+                </span>                                
+                <span class="author-meta"> 
+                    <span class="post-name">
+                    <a href="https://collabnix.com/author/ajeetraina/">Ajeet Raina</a></span><br> 
+                    <span class="post-date">Apr 29, 2023</span>
+                    <span class="dot"></span>
+                    <span class="readingtime">3 min read</span> 
+                </span> 
+                <span class="post-read-more">
+                    <a href="https://collabnix.com/performing-kubernetes-crud-operation-programmatically-using-python-on-docker-desktop/" title="">
+                    <svg class="svgIcon-use" width="25" height="25" viewBox="0 0 25 25">
+                        <path d="M19 6c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v14.66h.012c.01.103.045.204.12.285a.5.5 0 0 0 .706.03L12.5 16.85l5.662 4.126a.508.508 0 0 0 .708-.03.5.5 0 0 0 .118-.285H19V6zm-6.838 9.97L7 19.636V6c0-.55.45-1 1-1h9c.55 0 1 .45 1 1v13.637l-5.162-3.668a.49.49 0 0 0-.676 0z" fill-rule="evenodd"></path>
+                    </svg>
+                    </a>
+                </span>            </div>                        
+        </div>
+    </div>
+</div>
+                                     
+        </div>
+            </div>
+    <div class="clearfix"></div>
+                        </div>                 
+    </div>
+
+    <div class="alertbar" style=""> 
+        <div class="container text-center"> 
+                    </div>
+    </div>
+
+</div><!-- /.site-content -->
+        
+        <div class="container">
+            <footer class="footer"> 
+                <p class="pull-left"> © Copyright Collabnix Inc </p> 
+                <p class="pull-right"> Built for Collabnix Community, <a href="https://www.community.collabnix.com/">by Community</a> </p> 
+                <div class="clearfix"></div>
+                <a href="" class="back-to-top hidden-md-down" style=""> 
+                <i class="fa fa-angle-up"></i>
+                </a>
+            </footer>
+        </div>
+        <script>
+window.addEventListener('sfsi_functions_loaded', function() {
+    if (typeof sfsi_responsive_toggle == 'function') {
+        sfsi_responsive_toggle(0);
+        // console.log('sfsi_responsive_toggle');
+
+    }
+})
+</script>
+    <script>
+        window.addEventListener('sfsi_functions_loaded', function() {
+            if (typeof sfsi_plugin_version == 'function') {
+                sfsi_plugin_version(2.77);
+            }
+        });
+
+        function sfsi_processfurther(ref) {
+            var feed_id = 'ZXdWelo0V1BUNmJ1Wk4vSHlkM0lDajBKZlp3QzBhaytGL0dQQnZ0M2JVdE42aWpWN2lvREdMekJLa1FmRXRGK3FRRi9QdS8renl6T1NIeUFjYWlvdCs1bysxMEZrajlZZ1gxY3IrWWNHNmgzQTNBcnpUZEVUMko4VWx5NCt0L1h8bDJyYUw0NlExZFQrMzdFZEpTQ1ZqMzNEbS96ZWJmTUltTS8zb0E5cEJ0TT0=';
+            var feedtype = 8;
+            var email = jQuery(ref).find('input[name="email"]').val();
+            var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if ((email != "Enter your email") && (filter.test(email))) {
+                if (feedtype == "8") {
+                    var url = "https://api.follow.it/subscription-form/" + feed_id + "/" + feedtype;
+                    window.open(url, "popupwindow", "scrollbars=yes,width=1080,height=760");
+                    return true;
+                }
+            } else {
+                alert("Please enter email address");
+                jQuery(ref).find('input[name="email"]').focus();
+                return false;
+            }
+        }
+    </script>
+    <style type="text/css" aria-selected="true">
+        .sfsi_subscribe_Popinner {
+            width: 100% !important;
+
+            height: auto !important;
+
+            padding: 18px 0px !important;
+
+            background-color: #ffffff !important;
+        }
+        .sfsi_subscribe_Popinner form {
+            margin: 0 20px !important;
+        }
+        .sfsi_subscribe_Popinner h5 {
+            font-family: Helvetica,Arial,sans-serif !important;
+
+            font-weight: bold !important;
+
+            color: #000000 !important;
+
+            font-size: 16px !important;
+
+            text-align: center !important;
+            margin: 0 0 10px !important;
+            padding: 0 !important;
+        }
+        .sfsi_subscription_form_field {
+            margin: 5px 0 !important;
+            width: 100% !important;
+            display: inline-flex;
+            display: -webkit-inline-flex;
+        }
+
+        .sfsi_subscription_form_field input {
+            width: 100% !important;
+            padding: 10px 0px !important;
+        }
+
+        .sfsi_subscribe_Popinner input[type=email] {
+            font-family: Helvetica,Arial,sans-serif !important;
+
+            font-style: normal !important;
+
+            color:  !important;
+
+            font-size: 14px !important;
+
+            text-align: center !important;
+        }
+
+        .sfsi_subscribe_Popinner input[type=email]::-webkit-input-placeholder {
+
+            font-family: Helvetica,Arial,sans-serif !important;
+
+            font-style: normal !important;
+
+            color:  !important;
+
+            font-size: 14px !important;
+
+            text-align: center !important;
+        }
+        .sfsi_subscribe_Popinner input[type=email]:-moz-placeholder {
+            /* Firefox 18- */
+
+            font-family: Helvetica,Arial,sans-serif !important;
+
+            font-style: normal !important;
+
+            color:  !important;
+
+            font-size: 14px !important;
+
+            text-align: center !important;
+
+        }
+
+        .sfsi_subscribe_Popinner input[type=email]::-moz-placeholder {
+            /* Firefox 19+ */
+            font-family: Helvetica,Arial,sans-serif !important;
+
+            font-style: normal !important;
+
+            color:  !important;
+
+            font-size: 14px !important;
+
+            text-align: center !important;
+
+        }
+
+        .sfsi_subscribe_Popinner input[type=email]:-ms-input-placeholder {
+            font-family: Helvetica,Arial,sans-serif !important;
+
+            font-style: normal !important;
+
+            color:  !important;
+
+            font-size: 14px !important;
+
+            text-align: center !important;
+        }
+
+        .sfsi_subscribe_Popinner input[type=submit] {
+            font-family: Helvetica,Arial,sans-serif !important;
+
+            font-weight: bold !important;
+
+            color: #000000 !important;
+
+            font-size: 16px !important;
+
+            text-align: center !important;
+
+            background-color: #dedede !important;
+        }
+
+        .sfsi_shortcode_container {
+            float: left;
+        }
+
+        .sfsi_shortcode_container .norm_row .sfsi_wDiv {
+            position: relative !important;
+        }
+
+        .sfsi_shortcode_container .sfsi_holders {
+            display: none;
+        }
+
+            </style>
+
+<div style="text-align:center;">
+  <a href="https://discord.gg/QEkCXAXYSe" target="_blank" style="background-color:#7289DA;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">Join our Discord Server</a>
+</div>
+	<script type="text/javascript">
+		(function () {
+			var c = document.body.className;
+			c = c.replace(/woocommerce-no-js/, 'woocommerce-js');
+			document.body.className = c;
+		})();
+	</script>
+	<script type="text/javascript" id="post-views-counter-frontend-js-extra">
+/* <![CDATA[ */
+var pvcArgsFrontend = {"mode":"rest_api","postID":"18169","requestURL":"https:\/\/collabnix.com\/wp-json\/post-views-counter\/view-post\/18169","nonce":"66a798618a"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/frontend.min.js" id="post-views-counter-frontend-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/core.min.js" id="jquery-ui-core-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/modernizr.custom.min.js" id="SFSIjqueryModernizr-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/jquery.shuffle.min.js" id="SFSIjqueryShuffle-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/random-shuffle-min.js" id="SFSIjqueryrandom-shuffle-js"></script>
+<script type="text/javascript" id="SFSICustomJs-js-extra">
+/* <![CDATA[ */
+var sfsi_icon_ajax_object = {"ajax_url":"https:\/\/collabnix.com\/wp-admin\/admin-ajax.php","plugin_url":"https:\/\/collabnix.com\/wp-content\/plugins\/ultimate-social-media-icons\/"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/custom.js" id="SFSICustomJs-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/jquery.blockUI.min.js" id="jquery-blockui-js"></script>
+<script type="text/javascript" id="wc-add-to-cart-js-extra">
+/* <![CDATA[ */
+var wc_add_to_cart_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","i18n_view_cart":"View basket","cart_url":"https:\/\/collabnix.com","is_cart":"","cart_redirect_after_add":"no"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/add-to-cart.min.js" id="wc-add-to-cart-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/js.cookie.min.js" id="js-cookie-js"></script>
+<script type="text/javascript" id="woocommerce-js-extra">
+/* <![CDATA[ */
+var woocommerce_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/woocommerce.min.js" id="woocommerce-js"></script>
+<script type="text/javascript" id="wc-cart-fragments-js-extra">
+/* <![CDATA[ */
+var wc_cart_fragments_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","cart_hash_key":"wc_cart_hash_71a5eea1b5eda73842e8a82c639adbec","fragment_name":"wc_fragments_71a5eea1b5eda73842e8a82c639adbec","request_timeout":"5000"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/cart-fragments.min.js" id="wc-cart-fragments-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/tether.min.js" id="bootstrap4tether-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/bootstrap.min.js" id="bootstrap4-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/ie10-viewport-bug-workaround.js" id="mediumish-ieviewportbugworkaround-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/masonry.pkgd.min.js" id="mediumish-masonrypkgd-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/mediumish.js" id="mediumish-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/prism.js" id="hcb-prism-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/clipboard.min.js" id="clipboard-js"></script>
+<script type="text/javascript" id="hcb-script-js-extra">
+/* <![CDATA[ */
+var hcbVars = {"showCopyBtn":"1","copyBtnLabel":"Copy code to clipboard"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/hcb_script.js" id="hcb-script-js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/jquery.cookie.min.js" id="jquery-cookie-js"></script>
+<script type="text/javascript" id="wp-claps-applause-js-extra">
+/* <![CDATA[ */
+var clapsapplause = {"ajax_url":"https:\/\/collabnix.com\/wp-admin\/admin-ajax.php","lovedText":"","loveText":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="Getting%20Started%20with%20Docker%20and%20PostgreSQL%20%E2%80%93%20Collabnix_fichiers/claps-applause.js" id="wp-claps-applause-js"></script>
+         
+
+</body></html>
